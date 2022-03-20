@@ -1,0 +1,1 @@
+Just copy vscode_settings folder to projectroot.
