@@ -1,15 +1,17 @@
 #include <math.h>
 #include "nav_alg.h"
+#include <stdio.h>
+#include "constants.h"
 
 Nav::Nav()
 {
 }
 
-void Nav::init(float phi, float lambda, int frequency) {
-	Nav::phi = phi;
-	Nav::lambda = lambda;
-	Nav::frequency = frequency;
-	dt = 1/frequency;
+void Nav::init(float p, float l, int f) {
+	phi = p;
+	lambda = l;
+	frequency = f;
+	Nav::dt = 1/float(frequency);
 }
 
 void Nav::puasson_equation() 
@@ -28,9 +30,9 @@ void Nav::puasson_equation()
 void Nav::euler_angles()
 {
 	float c0 = sqrt(pow(c13, 2) + pow(c33, 2));
-	teta = atan(c23 / c0);
-	gamma = -atan(c13 / c33);
-	psi = atan(c21 / c22);
+	teta = atan2f(c23, c0);
+	gamma = -atan2f(c13, c33);
+	psi = atan2f(c21, c22);
 }
 
 void Nav::acc_body_enu()
@@ -65,9 +67,9 @@ void Nav::ang_velocity_body_enu()
 
 void Nav::aligment(float roll, float pitch, float yaw)
 {
-	float psi = yaw;
-	float teta = pitch;
-	float gamma = roll;
+	psi = yaw;
+	teta = pitch;
+	gamma = roll;
 	
 	float sp = sin(psi); float st = sin(teta); float sg = sin(gamma);
 	
@@ -95,35 +97,3 @@ void Nav::iter(vec_body acc, vec_body gyr)
 	euler_angles();
 	coordinates();
 }
-
-void Nav::normalization()
-{
-    double c1i = pow(c11,2) + pow(c12,2) + pow(c13,2);
-    double c2i = pow(c21,2) + pow(c22,2) + pow(c23,2);
-    double c3i = pow(c31,2) + pow(c32,2) + pow(c33,2);
-    
-    c11 = c11 / c1i;
-    c12 = c12 / c1i;
-    c13 = c13 / c1i;
-    c21 = c21 / c1i;
-    c22 = c22 / c1i;
-    c23 = c23 / c1i;
-    c31 = c31 / c1i;
-    c32 = c32 / c1i;
-    c33 = c33 / c1i;
-
-    double c1j = pow(c11,2) + pow(c21,2) + pow(c31,2);
-    double c2j = pow(c12,2) + pow(c22,2) + pow(c32,2);
-    double c3j = pow(c13,2) + pow(c23,2) + pow(c33,2);
-
-    c11 = c11 / c1j;
-    c12 = c12 / c1j;
-    c13 = c13 / c1j;
-    c21 = c21 / c1j;
-    c22 = c22 / c1j;
-    c23 = c23 / c1j;
-    c31 = c31 / c1j;
-    c32 = c32 / c1j;
-    c33 = c33 / c1j;
-    
-} 

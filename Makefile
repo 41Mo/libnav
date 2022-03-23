@@ -15,7 +15,8 @@ API = lib/libnavapi.so
 TEST_BIN = test.out
 
 CC = g++
-CPPFLAGS=-std=c++17 -Wall -Werror -Wpedantic -fpic -O0
+
+CPPFLAGS=-g -ggdb -O0 -fPIC -Wall -Werror -Wpedantic -DPYTHON
 LINKAGE=-shared
 
 LDFLAGS=navapi
@@ -26,6 +27,9 @@ all: api
 lib: ${LIB}
 api: ${API}
 
+%.o:%.cpp
+	${CC}  $(addprefix -I,$(HDRS)) ${CPPFLAGS} -c $< -o $@
+
 $(LIB): $(LIB_OBJS)
 	${CC} ${LINKAGE} $< -o $@
 
@@ -33,13 +37,10 @@ $(API): ${LIB_OBJS} ${API_OBJS}
 	${CC} ${LINKAGE} $^ -o $@
 
 test_dynamic: ${TEST_SRC} ${API}
-	${CC} -ggdb -L${LDPATH} ${CPPFLAGS} $(addprefix -I,$(HDRS)) -l${LDFLAGS} ${TEST_SRC} -o ${TEST_BIN}
+	${CC} -L${LDPATH} ${CPPFLAGS} $(addprefix -I,$(HDRS)) -l${LDFLAGS} ${TEST_SRC} -o ${TEST_BIN}
 
 test_static: ${TEST_SRC} ${API_SRCS} ${LIB_SRCS}
-	${CC} -ggdb ${CPPFLAGS} $(addprefix -I,$(HDRS)) $^ -o ${TEST_BIN}
-
-%.o: %.cpp
-	${CC} -c $(addprefix -I,$(HDRS)) ${CPPFLAGS} $< -o $@
+	${CC} ${CPPFLAGS} $(addprefix -I,$(HDRS)) $^ -o ${TEST_BIN}
 
 clean_lib:
 	rm -f ${LIB} ${LIB_OBJS}

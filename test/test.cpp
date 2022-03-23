@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <vector>
 
+#include "constants.h"
 #include "analysis_api.h"
 
 std::vector<std::vector<std::string>> parse_csv(std::string fn) {
@@ -58,26 +59,54 @@ float precise_float(std::string s) {
 
 int main(int argc, char const *argv[])
 {
-    auto csv = parse_csv("../../csv_data/Sensors_and_orientation.csv");
-    uint64_t size = csv.size();
+    /*
+    auto csv = parse_csv("test/test_data.csv");
+    int size = csv.size();
     vec_body *acc = new vec_body[size];
     vec_body *gyr = new vec_body[size];
 
     // starting from 1 to skip header
     int header = 1;
-    for (uint64_t i = header; i<size; i++) {
+    for (auto i = header; i<size; i++) {
         auto row = csv.at(i);
-        acc[i].X = precise_float(row.at(2));
-        acc[i].Y = precise_float(row.at(3));
-        acc[i].Z = precise_float(row.at(4));
-        gyr[i].X = precise_float(row.at(5));
-        gyr[i].Y = precise_float(row.at(6));
-        gyr[i].Z = precise_float(row.at(7));
+        acc[i-1].X = precise_float(row.at(2));
+        acc[i-1].Y = precise_float(row.at(3));
+        acc[i-1].Z = precise_float(row.at(4));
+        gyr[i-1].X = precise_float(row.at(5));
+        gyr[i-1].Y = precise_float(row.at(6));
+        gyr[i-1].Z = precise_float(row.at(7));
         //test_print(acc[i], gyr[i]);
     }
-    SENSORS sens{acc, gyr, size};
+    Analysis_api *api = Analysis_api_new();
+    SENSORS s{size, acc, gyr};
+    */
 
-    Analysis_api api{sens, 0, 0, 0 ,0 ,0, 1, size};
-    api.loop();
+    auto frequency = 100;
+    auto time = 60;
+    auto points = time*frequency;
+
+    vec_body *acc = new vec_body[points];
+    vec_body *gyr = new vec_body[points];
+    for (auto i =0; i< points; i++) {
+      acc[i].X = 0;
+      acc[i].Y = 0;
+      acc[i].Z = 9.81;
+      gyr[i].X = 0;
+      gyr[i].Y = U;
+      gyr[i].Z = 0;
+    }
+
+    Analysis_api *api = Analysis_api_new();
+    SENSORS s{points, acc, gyr};
+    api_init(api, 0,0,0, 0,0, frequency,time);
+    api_set_sens(api, s);
+    api_loop(api);
+    auto G = api_get_g();
+    printf("%f\n", G);
+    OUT a = api_get_data(api);
+    for (auto i = 0; i< s.size; i++) {
+      auto k = a.pitch[i];
+      printf("%1.21f\n", k);
+    }
     return 0;
 }
