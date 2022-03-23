@@ -95,3 +95,35 @@ void Nav::iter(vec_body acc, vec_body gyr)
 	euler_angles();
 	coordinates();
 }
+
+void Nav::normalization()
+{
+    double c1i = pow(c11,2) + pow(c12,2) + pow(c13,2);
+    double c2i = pow(c21,2) + pow(c22,2) + pow(c23,2);
+    double c3i = pow(c31,2) + pow(c32,2) + pow(c33,2);
+    
+    c11 = c11 / c1i;
+    c12 = c12 / c1i;
+    c13 = c13 / c1i;
+    c21 = c21 / c1i;
+    c22 = c22 / c1i;
+    c23 = c23 / c1i;
+    c31 = c31 / c1i;
+    c32 = c32 / c1i;
+    c33 = c33 / c1i;
+
+    double c1j = pow(c11,2) + pow(c21,2) + pow(c31,2);
+    double c2j = pow(c12,2) + pow(c22,2) + pow(c32,2);
+    double c3j = pow(c13,2) + pow(c23,2) + pow(c33,2);
+
+    c11 = c11 / c1j;
+    c12 = c12 / c1j;
+    c13 = c13 / c1j;
+    c21 = c21 / c1j;
+    c22 = c22 / c1j;
+    c23 = c23 / c1j;
+    c31 = c31 / c1j;
+    c32 = c32 / c1j;
+    c33 = c33 / c1j;
+    
+} 

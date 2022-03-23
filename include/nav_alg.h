@@ -17,6 +17,7 @@ public:
 	void aligment(float roll, float pitch, float yaw);
 	void iter(vec_body acc, vec_body gyr);
 	void init(float phi, float lambda, int frequency);
+	void normalization();
 private:
 	// Earth constants
 	const float R{6378245.0};
