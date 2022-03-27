@@ -14,7 +14,9 @@ public:
 	void speed();
 	void coordinates();
 	void ang_velocity_body_enu();
-	void aligment(float roll, float pitch, float yaw);
+	void alignment(float roll, float pitch, float yaw);
+	void alignment(float ax_mean, float ay_mean, float az_mean, float yaw);
+	void alignment(float st, float ct, float sg, float cg, float sp, float cp);
 	void iter(vec_body acc, vec_body gyr);
 	void init(float phi, float lambda, int frequency);
 

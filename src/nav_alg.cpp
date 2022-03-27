@@ -30,8 +30,8 @@ void Nav::puasson_equation()
 void Nav::euler_angles()
 {
 	float c0 = sqrt(pow(c13, 2) + pow(c33, 2));
-	teta = atan2f(c23, c0);
-	gamma = -atan2f(c13, c33);
+	teta = atan(c23/c0);
+	gamma = -atan(c13/c33);
 	psi = atan2f(c21, c22);
 }
 
@@ -65,7 +65,7 @@ void Nav::ang_velocity_body_enu()
 	w_enu.U = (v_enu.E / (R + H)) * tan(phi) + U * sin(phi);
 }
 
-void Nav::aligment(float roll, float pitch, float yaw)
+void Nav::alignment(float roll, float pitch, float yaw)
 {
 	psi = yaw;
 	teta = pitch;
@@ -74,7 +74,11 @@ void Nav::aligment(float roll, float pitch, float yaw)
 	float sp = sin(psi); float st = sin(teta); float sg = sin(gamma);
 	
 	float cp = cos(psi); float ct = cos(teta); float cg = cos(gamma);
-	
+
+	alignment(st, ct, sg, cg, sp, cp);
+}
+
+void Nav::alignment(float st, float ct, float sg, float cg, float sp, float cp) {
 	c11 = cp * cg + sp * st * sg;
 	c12 = sp * ct;
 	c13 = cp * sg - sp * st * cg;
@@ -85,6 +89,24 @@ void Nav::aligment(float roll, float pitch, float yaw)
 	c32 = st;
 	c33 = ct * cg;
 }
+
+void Nav::alignment(float ax, float ay, float az, float yaw) {
+	psi = yaw;
+	
+	float A = sqrt(pow(ax, 2) + pow(az, 2));
+
+	float st = ay/G;
+	float sg = -1 * ax/A;
+	
+	float ct = A/G;
+	float cg = az/A;
+
+	float sp = sin(psi);
+	float cp = cos(psi);
+
+	alignment(st, ct, sg, cg, sp, cp);
+}
+//vec_enu Nav::mag_to_enu()
 
 void Nav::iter(vec_body acc, vec_body gyr)
 {

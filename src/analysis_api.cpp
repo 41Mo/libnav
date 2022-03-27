@@ -16,7 +16,7 @@ void init_array(float arr[], int size) {
 void Analysis_api::init(float roll, float pitch, float yaw, float lat, float lon, int time, int frequency) {
   points = time * frequency;
   nav.init(lat, lon, frequency);
-  nav.aligment(roll, pitch, yaw);
+  nav.alignment(roll, pitch, yaw);
 
   // init arrays
   //data.size = points;
