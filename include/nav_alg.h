@@ -25,7 +25,7 @@ public:
 	Special function just for analysis purposes.
 	Primarly used to check if alignment was successfull.
 	*/
-	vec_body get_prh();
+	void get_prh(vec_body *v);
 
 	// variables
 	float c11{0}, c12{0}, c13{0}, c21{0}, c22{0}, c23{0}, c31{0}, c32{0}, c33{0}; //начальные элементы матрицы

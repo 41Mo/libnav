@@ -35,18 +35,16 @@ void Nav::euler_angles()
 	psi = atan2f(c21, c22);
 }
 
-vec_body Nav::get_prh()
+void Nav::get_prh(vec_body *v)
 {
 	float c0 = sqrt(pow(c13, 2) + pow(c33, 2));
 	teta = atan(c23/c0);
 	gamma = -atan(c13/c33);
 	psi = atan2f(c21, c22);
 
-	vec_body v{};
-	v.X = teta;
-	v.Y = gamma;
-	v.Z = psi;
-	return v;
+	v->X = teta;
+	v->Y = gamma;
+	v->Z = psi;
 }
 
 void Nav::acc_body_enu()

@@ -58,7 +58,7 @@ extern "C"
     };
 
 	  // special function just for analysis purposes
-    vec_body nav_get_prh() { return nav.get_prh(); }
+    void nav_get_prh(vec_body *v) { nav.get_prh(v); }
   };
 
 #ifndef PYTHON
@@ -80,7 +80,7 @@ extern "C"
   float api_get_u(void) { return U; }
   float api_get_g(void) { return G; }
 
-  void api_alignment_prh(Analysis_api *api, float roll, float pitch, float yaw)
+  void api_alignment_rph(Analysis_api *api, float roll, float pitch, float yaw)
   {
     api->alignment(roll, pitch, yaw);
   };
@@ -93,7 +93,7 @@ extern "C"
     api->alignment(st, ct, sg, cg, sp, cp);
   };
 
-  vec_body api_get_prh(Analysis_api *api) { return api->nav_get_prh(); }
+  void api_get_prh(Analysis_api *api, vec_body *v) { api->nav_get_prh(v); }
 }
 #endif
 #endif
