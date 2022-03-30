@@ -22,9 +22,9 @@ void Nav::puasson_equation()
 	c21 = c21 + dt * (c31 * w_enu.E - c23 * w_body.Y + c22 * w_body.Z - c11 * w_enu.U);
 	c22 = c22 + dt * (c23 * w_body.X + c32 * w_enu.E - c21 * w_body.Z - c12 * w_enu.U);
 	c23 = c23 - dt * (c22 * w_body.X - c33 * w_enu.E - c21 * w_body.Y + c13 * w_enu.U);
-	c31 = c31 - dt * (c21 * w_enu.E + c33 * w_body.Y - c11 * w_enu.N - c32 * w_body.Z);
-	c32 = c32 + dt * (c33 * w_body.X - c22 * w_enu.E + c12 * w_enu.N - c31 * w_body.Z);
-	c33 = c33 - dt * (c32 * w_body.X + c23 * w_enu.E - c31 * w_body.Y - c13 * w_enu.N);
+	c31 = c12 * c23 - c13 * c22;
+	c32 = - (c11 * c23 - c13 * c21);
+	c33 = c11 * c22 - c12 * c21;
 }
 
 void Nav::euler_angles()
@@ -57,7 +57,7 @@ void Nav::acc_body_enu()
 void Nav::speed()
 {
 	v_enu.E = v_enu.E + (a_enu.E + (U * sin(phi) + w_enu.U) * v_enu.N) * dt;
-	v_enu.N = v_enu.N + (a_enu.N + (U * sin(phi) + w_enu.U) * v_enu.E) * dt;
+	v_enu.N = v_enu.N + (a_enu.N - (U * sin(phi) + w_enu.U) * v_enu.E) * dt;
 
 }
 
@@ -124,9 +124,9 @@ void Nav::iter(vec_body acc, vec_body gyr)
 	w_body = gyr;
 	a_body = acc;
 	acc_body_enu();
-	speed();
 	ang_velocity_body_enu();
 	puasson_equation();
+	speed();
 	euler_angles();
 	coordinates();
 }
