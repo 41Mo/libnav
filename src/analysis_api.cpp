@@ -13,13 +13,11 @@ void init_array(float arr[], int size) {
   }
 }
 
-void Analysis_api::init(float roll, float pitch, float yaw, float lat, float lon, int time, int frequency) {
+void Analysis_api::init(float lat, float lon, int time, int frequency) {
   points = time * frequency;
   nav.init(lat, lon, frequency);
-  nav.alignment(roll, pitch, yaw);
 
   // init arrays
-  //data.size = points;
   data.roll = new float[points];
   data.pitch = new float[points];
   data.yaw = new float[points];
@@ -45,13 +43,13 @@ void Analysis_api::loop() {
     nav.iter(sensors.acc[i], sensors.gyr[i]);
 
     // add data to array on each iteration
-    data.roll[i] = nav.gamma;
+    data.roll[i]  = nav.gamma;
     data.pitch[i] = nav.teta;
-    data.yaw[i] = nav.psi;
-    data.lat[i] = nav.phi;
-    data.lon[i] = nav.lambda;
-    data.v_e[i] = nav.v_enu.E;
-    data.v_n[i] = nav.v_enu.N;
+    data.yaw[i]   = nav.psi;
+    data.lat[i]   = nav.phi;
+    data.lon[i]   = nav.lambda;
+    data.v_e[i]   = nav.v_enu.E;
+    data.v_n[i]   = nav.v_enu.N;
   }
 }
 

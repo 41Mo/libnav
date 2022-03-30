@@ -35,6 +35,20 @@ void Nav::euler_angles()
 	psi = atan2f(c21, c22);
 }
 
+vec_body Nav::get_prh()
+{
+	float c0 = sqrt(pow(c13, 2) + pow(c33, 2));
+	teta = atan(c23/c0);
+	gamma = -atan(c13/c33);
+	psi = atan2f(c21, c22);
+
+	vec_body v{};
+	v.X = teta;
+	v.Y = gamma;
+	v.Z = psi;
+	return v;
+}
+
 void Nav::acc_body_enu()
 {
 	a_enu.E = c11 * a_body.X + c12 * a_body.Y + c13 * a_body.Z;
@@ -55,7 +69,6 @@ void Nav::coordinates()
 	phi = phi + (v_enu.N / (R + H)) * dt;
 	// Longitude
 	lambda = lambda + (v_enu.E / ((R + H) * cos(phi))) * dt;
-
 }
 
 void Nav::ang_velocity_body_enu()
