@@ -29,10 +29,10 @@ void Nav::puasson_equation()
 
 void Nav::euler_angles()
 {
-	float c0 = sqrt(pow(c13, 2) + pow(c33, 2));
-	teta = atan(c23/c0);
-	gamma = -atan(c13/c33);
-	psi = atan2f(c21, c22);
+	float c0 = sqrt(pow(c31, 2) + pow(c33, 2));
+	teta = atan(c32/c0);
+	gamma = -atan(c31/c33);
+	psi = atan2f(c12, c22);
 }
 
 void Nav::get_prh(vec_body *v)
