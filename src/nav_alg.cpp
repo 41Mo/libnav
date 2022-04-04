@@ -160,7 +160,7 @@ void Nav::normalization()
 		norm_row();
 		i++;
 	} else if (i <= 10) {
-		norm_column;
+		norm_column();
 		i++;
 	} else {
 		i = 0;
