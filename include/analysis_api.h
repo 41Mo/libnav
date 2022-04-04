@@ -16,7 +16,7 @@ typedef struct
 {
   float *roll;
   float *pitch;
-  float *yaw;
+  float *heading;
   float *lat;
   float *lon;
   float *v_e;

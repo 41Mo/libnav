@@ -20,14 +20,14 @@ void Analysis_api::init(float lat, float lon, int time, int frequency) {
   // init arrays
   data.roll = new float[points];
   data.pitch = new float[points];
-  data.yaw = new float[points];
+  data.heading = new float[points];
   data.lat = new float[points];
   data.lon = new float[points];
   data.v_e = new float[points];
   data.v_n = new float[points];
   init_array(data.roll, points);
   init_array(data.pitch, points);
-  init_array(data.yaw, points);
+  init_array(data.heading, points);
   init_array(data.lat, points);
   init_array(data.lon, points);
   init_array(data.v_e, points);
@@ -45,7 +45,11 @@ void Analysis_api::loop() {
     // add data to array on each iteration
     data.roll[i]  = nav.gamma;
     data.pitch[i] = nav.teta;
-    data.yaw[i]   = nav.psi;
+    if (nav.psi < 0) {
+      data.heading[i] = nav.psi+3.14*2;
+    } else {
+      data.heading[i] = nav.psi;
+    }
     data.lat[i]   = nav.phi;
     data.lon[i]   = nav.lambda;
     data.v_e[i]   = nav.v_enu.E;
