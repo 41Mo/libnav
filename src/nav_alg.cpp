@@ -125,6 +125,10 @@ void Nav::norm_row()
 	float c2i = pow(c21,2) + pow(c22,2) + pow(c23,2);
 	float c3i = pow(c31,2) + pow(c32,2) + pow(c33,2);
 
+	if (c1i > 1) c1i = 1;
+	if (c2i > 1) c2i = 1;
+	if (c3i > 1) c3i = 1;
+
 	c11 = c11 / c1i;
 	c12 = c12 / c1i;
 	c13 = c13 / c1i;
@@ -142,6 +146,10 @@ void Nav::norm_column()
 	float cj2 = pow(c12,2) + pow(c22,2) + pow(c32,2);
 	float cj3 = pow(c13,2) + pow(c23,2) + pow(c33,2);
 
+	if (cj1 > 1) cj1 = 1;
+	if (cj2 > 1) cj2 = 1;
+	if (cj3 > 1) cj3 = 1;
+
 	c11 = c11 / cj1;
 	c12 = c12 / cj2;
 	c13 = c13 / cj3;
@@ -153,7 +161,6 @@ void Nav::norm_column()
 	c33 = c33 / cj3;
 }
 
-int i = 0;
 void Nav::normalization()
 {
 	if (i <= 5) {

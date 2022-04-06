@@ -41,6 +41,7 @@ public:
 	float lambda{0};
 	int frequency{0};
 	float dt{0};
+	int i{0};
 
 	vec_body w_body {0, 0, 0};
 	vec_body a_body {0, 0, 0};
