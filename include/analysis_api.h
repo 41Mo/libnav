@@ -83,15 +83,15 @@ extern "C"
   void api_alignment_rph(Analysis_api *api, float roll, float pitch, float yaw)
   {
     api->alignment(roll, pitch, yaw);
-  };
+  }
   void api_alignment_acc(Analysis_api *api, float ax_mean, float ay_mean, float az_mean, float yaw)
   {
     api->alignment(ax_mean, ay_mean, az_mean, yaw);
-  };
+  }
   void api_alignment_cos(Analysis_api *api, float st, float ct, float sg, float cg, float sp, float cp)
   {
     api->alignment(st, ct, sg, cg, sp, cp);
-  };
+  }
 
   void api_get_prh(Analysis_api *api, vec_body *v) { api->nav_get_prh(v); }
 }

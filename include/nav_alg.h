@@ -20,6 +20,9 @@ public:
 	void alignment(float st, float ct, float sg, float cg, float sp, float cp);
 	void iter(vec_body acc, vec_body gyr);
 	void init(float phi, float lambda, int frequency);
+	void norm_row();
+	void norm_column();
+	void normalization();
 	
 	/* 
 	Special function just for analysis purposes.
@@ -38,6 +41,7 @@ public:
 	float lambda{0};
 	int frequency{0};
 	float dt{0};
+	int i{0};
 
 	vec_body w_body {0, 0, 0};
 	vec_body a_body {0, 0, 0};
