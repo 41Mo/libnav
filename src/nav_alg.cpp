@@ -1,16 +1,19 @@
 #include <math.h>
-#include "nav_alg.h"
 #include <stdio.h>
+
+#include "nav_alg.h"
 #include "constants.h"
 
 Nav::Nav()
 {
 }
 
-void Nav::init(float p, float l, int f) {
+void Nav::init(float p, float l, int f, int ct, bool cr) {
 	phi = p;
 	lambda = l;
 	frequency = f;
+	corr_time = ct;
+	corr_mode = cr;
 	Nav::dt = 1/float(frequency);
 }
 
@@ -174,6 +177,37 @@ void Nav::normalization()
 	}
 }
 
+void Nav::calc_coef_corr(int T_s)
+{
+	w_s = (2 * Pi) / T_s;
+	k1 = 1.4 * w_s;
+	k2 = (pow(w_s, 2) / (G / R)) - 1;	
+}
+
+void Nav::set_sns(vec_enu v_sns)
+{
+	v_snsE = v_sns.E;
+	v_snsN = v_sns.N;
+}
+
+void Nav::correction_speed()
+{
+	v_enu.E = v_enu.E + (a_enu.E + (U * sin(phi) + w_enu.U) * v_enu.N - k1 * (v_enu.E - v_snsE)) * dt;
+	v_enu.N = v_enu.N + (a_enu.N - (U * sin(phi) + w_enu.U) * v_enu.E - k1 * (v_enu.N - v_snsN)) * dt;
+}
+
+void Nav::correction_mode() 
+{
+	if (corr_mode) 
+	{
+		calc_coef_corr(corr_time);
+		correction_speed();
+	} else 
+	{
+		return;
+	}
+}
+
 void Nav::iter(vec_body acc, vec_body gyr)
 {
 	w_body = gyr;
@@ -183,6 +217,7 @@ void Nav::iter(vec_body acc, vec_body gyr)
 	normalization();
 	puasson_equation();
 	speed();
+	correction_speed();
 	euler_angles();
 	coordinates();
 }

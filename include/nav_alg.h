@@ -19,10 +19,14 @@ public:
 	void alignment(float ax_mean, float ay_mean, float az_mean, float yaw);
 	void alignment(float st, float ct, float sg, float cg, float sp, float cp);
 	void iter(vec_body acc, vec_body gyr);
-	void init(float phi, float lambda, int frequency);
+	void init(float phi, float lambda, int frequency, int corr_time, bool corr_mode);
 	void norm_row();
 	void norm_column();
 	void normalization();
+	void calc_coef_corr(int T_s);
+	void correction_mode();
+	void set_sns(vec_enu v_sns);
+	void correction_speed();
 	
 	/* 
 	Special function just for analysis purposes.
@@ -41,13 +45,21 @@ public:
 	float lambda{0};
 	int frequency{0};
 	float dt{0};
+	float k1{0};
+	float k2{0};
+	float v_snsE{0};
+	float v_snsN{0};
+	float w_s{0};
 	int i{0};
+	int corr_time{0};
+	bool corr_mode = false;
 
 	vec_body w_body {0, 0, 0};
 	vec_body a_body {0, 0, 0};
 	vec_enu v_enu {0, 0, 0};
-	vec_enu w_enu{0,0,0};
-	vec_enu a_enu{0,0,0};
+	vec_enu w_enu{0, 0, 0};
+	vec_enu a_enu{0, 0, 0};
+	
 
 
 private:
