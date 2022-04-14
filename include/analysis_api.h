@@ -38,7 +38,7 @@ extern "C"
   public:
     Analysis_api();
     ~Analysis_api();
-    void init(float lat, float lon, int time, int frequency);
+    void init(float lat, float lon, int time, int frequency, int corr_time, bool corr_mode);
     void loop();
     void set_sensors(SENSORS s);
     OUT get_data();
