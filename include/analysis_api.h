@@ -38,7 +38,8 @@ extern "C"
   public:
     Analysis_api();
     ~Analysis_api();
-    void init(float lat, float lon, int time, int frequency, int corr_time, bool corr_mode);
+    void init(float lat, float lon, int time, int frequency);
+    void set_corr_mode(int corr_time, bool corr_mode);
     void loop();
     void set_sensors(SENSORS s);
     OUT get_data();
@@ -74,6 +75,7 @@ extern "C"
   {
     api->init(lat, lon, frequency, time);
   }
+  void api_set_corr(Analysis_api *api, int corr_time, bool corr_mode) {api -> set_corr_mode(corr_time, corr_mode);}
   void api_loop(Analysis_api *api) { api->loop(); }
   void api_set_sens(Analysis_api *api, SENSORS s) { api->set_sensors(s); }
   OUT api_get_data(Analysis_api *api) { return api->get_data(); }
