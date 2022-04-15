@@ -8,13 +8,17 @@ Nav::Nav()
 {
 }
 
-void Nav::init(float p, float l, int f, int ct, bool cr) {
+void Nav::init(float p, float l, int f) {
 	phi = p;
 	lambda = l;
 	frequency = f;
-	corr_time = ct;
-	corr_mode = cr;
 	Nav::dt = 1/float(frequency);
+}
+
+void Nav::set_corr_mode(int Time, bool Mode)
+{
+	corr_time = Time;
+	corr_mode = Mode;
 }
 
 void Nav::puasson_equation() 
@@ -177,9 +181,9 @@ void Nav::normalization()
 	}
 }
 
-void Nav::calc_coef_corr(int T_s)
+void Nav::calc_coef_corr()
 {
-	w_s = (2 * Pi) / T_s;
+	w_s = (2 * Pi) / corr_time;
 	k1 = 1.4 * w_s;
 	k2 = (pow(w_s, 2) / (G / R)) - 1;	
 }
@@ -200,11 +204,11 @@ void Nav::correction_mode()
 {
 	if (corr_mode) 
 	{
-		calc_coef_corr(corr_time);
+		calc_coef_corr();
 		correction_speed();
 	} else 
 	{
-		return;
+		speed();
 	}
 }
 
@@ -216,7 +220,8 @@ void Nav::iter(vec_body acc, vec_body gyr)
 	ang_velocity_body_enu();
 	normalization();
 	puasson_equation();
-	speed();
+	// speed();
+	calc_coef_corr();
 	correction_speed();
 	euler_angles();
 	coordinates();

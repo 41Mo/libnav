@@ -34,6 +34,10 @@ void Analysis_api::init(float lat, float lon, int time, int frequency) {
   init_array(data.v_n, points);
 }
 
+void Analysis_api::set_corr_mode(int corr_time, bool corr_mode){
+  nav.set_corr_mode(corr_time, corr_mode);
+}
+
 void Analysis_api::loop() {
   if (sensors.gyr == nullptr || sensors.acc == nullptr) {
     printf ("data error");

@@ -19,11 +19,12 @@ public:
 	void alignment(float ax_mean, float ay_mean, float az_mean, float yaw);
 	void alignment(float st, float ct, float sg, float cg, float sp, float cp);
 	void iter(vec_body acc, vec_body gyr);
-	void init(float phi, float lambda, int frequency, int corr_time, bool corr_mode);
+	void init(float phi, float lambda, int frequency);
+	void set_corr_mode(int corr_time, bool corr_mode);
 	void norm_row();
 	void norm_column();
 	void normalization();
-	void calc_coef_corr(int T_s);
+	void calc_coef_corr();
 	void correction_mode();
 	void set_sns(vec_enu v_sns);
 	void correction_speed();
