@@ -18,7 +18,24 @@ void Nav::init(float p, float l, int f) {
 void Nav::set_corr_mode(int Time, bool Mode)
 {
 	corr_time = Time;
-	corr_mode = Mode;
+	if (Mode) {
+		w_s = (2 * Pi) / corr_time;
+		k1 = 1.75 * w_s;
+		k2 = ((2.15 * pow(w_s, 2)) / (G / R)) - 1;
+		k3 = (pow(w_s,3) / (G / R)) - 1.75 * w_s;
+	} else {
+		k1 = 0;
+		k2 = 0;
+		k3 = 0;
+	}
+}
+
+void Nav::set_sns(vec_enu v_sns, float phi_corr, float lam_corr)
+{
+	v_snsE = v_sns.E;
+	v_snsN = v_sns.N;
+	phi_sns = phi_corr;
+	lambda_sns = lam_corr;
 }
 
 void Nav::puasson_equation() 
@@ -63,23 +80,22 @@ void Nav::acc_body_enu()
 
 void Nav::speed()
 {
-	v_enu.E = v_enu.E + (a_enu.E + (U * sin(phi) + w_enu.U) * v_enu.N) * dt;
-	v_enu.N = v_enu.N + (a_enu.N - (U * sin(phi) + w_enu.U) * v_enu.E) * dt;
-
+	v_enu.E = v_enu.E + (a_enu.E + (U * sin(phi) + w_enu.U) * v_enu.N - k1 * (v_enu.E - v_snsE)) * dt;
+	v_enu.N = v_enu.N + (a_enu.N - (U * sin(phi) + w_enu.U) * v_enu.E - k1 * (v_enu.N - v_snsN)) * dt;
 }
 
 void Nav::coordinates()
 {
 	// Latitude
-	phi = phi + (v_enu.N / (R + H)) * dt;
+	phi = phi + (v_enu.N / (R + H) - k3 * (phi - phi_sns)) * dt;
 	// Longitude
-	lambda = lambda + (v_enu.E / ((R + H) * cos(phi))) * dt;
+	lambda = lambda + (v_enu.E / ((R + H) * cos(phi)) - k3 * (lambda - lambda_sns)) * dt;
 }
 
 void Nav::ang_velocity_body_enu()
 {
-	w_enu.E = -v_enu.N / (R + H);
-	w_enu.N = v_enu.E / (R + H) + U * cos(phi);
+	w_enu.E = -v_enu.N / (R + H) - (k2 / R) * (v_enu.N - v_snsN);
+	w_enu.N = v_enu.E / (R + H) + U * cos(phi) + (k2 / R) * (v_enu.E - v_snsE);
 	w_enu.U = (v_enu.E / (R + H)) * tan(phi) + U * sin(phi);
 }
 
@@ -181,37 +197,6 @@ void Nav::normalization()
 	}
 }
 
-void Nav::calc_coef_corr()
-{
-	w_s = (2 * Pi) / corr_time;
-	k1 = 1.4 * w_s;
-	k2 = (pow(w_s, 2) / (G / R)) - 1;	
-}
-
-void Nav::set_sns(vec_enu v_sns)
-{
-	v_snsE = v_sns.E;
-	v_snsN = v_sns.N;
-}
-
-void Nav::correction_speed()
-{
-	v_enu.E = v_enu.E + (a_enu.E + (U * sin(phi) + w_enu.U) * v_enu.N - k1 * (v_enu.E - v_snsE)) * dt;
-	v_enu.N = v_enu.N + (a_enu.N - (U * sin(phi) + w_enu.U) * v_enu.E - k1 * (v_enu.N - v_snsN)) * dt;
-}
-
-void Nav::correction_mode() 
-{
-	if (corr_mode) 
-	{
-		calc_coef_corr();
-		correction_speed();
-	} else 
-	{
-		speed();
-	}
-}
-
 void Nav::iter(vec_body acc, vec_body gyr)
 {
 	w_body = gyr;
@@ -220,9 +205,7 @@ void Nav::iter(vec_body acc, vec_body gyr)
 	ang_velocity_body_enu();
 	normalization();
 	puasson_equation();
-	// speed();
-	calc_coef_corr();
-	correction_speed();
+	speed();
 	euler_angles();
 	coordinates();
 }

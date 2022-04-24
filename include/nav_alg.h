@@ -24,10 +24,7 @@ public:
 	void norm_row();
 	void norm_column();
 	void normalization();
-	void calc_coef_corr();
-	void correction_mode();
-	void set_sns(vec_enu v_sns);
-	void correction_speed();
+	void set_sns(vec_enu v_sns, float phi_corr, float lam_corr);
 	
 	/* 
 	Special function just for analysis purposes.
@@ -48,6 +45,9 @@ public:
 	float dt{0};
 	float k1{0};
 	float k2{0};
+	float k3{0};
+	float phi_sns{0};
+	float lambda_sns{0};
 	float v_snsE{0};
 	float v_snsN{0};
 	float w_s{0};
