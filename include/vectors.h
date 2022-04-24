@@ -7,6 +7,7 @@ typedef struct //Матрица связанного 3х-гранника
 	float Y;
 	float Z;
 } vec_body;
+
 typedef struct //Матрица географического 3х-гранника
 {
 	float E;

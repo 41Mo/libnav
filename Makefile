@@ -1,5 +1,7 @@
 LIB_SRCS := \
-		src/nav_alg.cpp
+		src/nav_alg.cpp \
+		src/nav_solution.cpp \
+
 API_SRCS := \
 		src/analysis_api.cpp
 TEST_SRC := \
@@ -9,6 +11,7 @@ LIB_OBJS := ${LIB_SRCS:cpp=o}
 API_OBJS := ${API_SRCS:cpp=o}
 
 HDRS := include
+HDRS += modules/PX4-Matrix/matrix
 LIB = lib/libnav.so
 API = lib/libnavapi.so
 

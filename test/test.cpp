@@ -98,7 +98,7 @@ int main(int argc, char const *argv[])
 
     Analysis_api *api = Analysis_api_new();
     SENSORS s{points, acc, gyr};
-    api_init(api, 0,0,0, 0,0, frequency,time);
+    api_init(api, 0,0, frequency,time);
     api_set_sens(api, s);
     api_loop(api);
     auto G = api_get_g();

@@ -15,8 +15,7 @@ void init_array(float arr[], int size) {
 
 void Analysis_api::init(float lat, float lon, int time, int frequency) {
   points = time * frequency;
-  nav.init(lat, lon, frequency);
-
+  nav = std::unique_ptr<Nav>(new Nav(lat, lon, frequency));
   // init arrays
   data.roll = new float[points];
   data.pitch = new float[points];
@@ -40,20 +39,20 @@ void Analysis_api::loop() {
     return;
   }
   for (int i = 0; i < points; i++) {
-    nav.iter(sensors.acc[i], sensors.gyr[i]);
+    nav->iter(sensors.acc[i], sensors.gyr[i]);
 
     // add data to array on each iteration
-    data.roll[i]  = nav.gamma;
-    data.pitch[i] = nav.teta;
-    if (nav.psi < 0) {
-      data.heading[i] = nav.psi+3.14*2;
+    data.roll[i]  = nav->sol().rot(1) ;
+    data.pitch[i] = nav->sol().rot(0);
+    if (nav->sol().rot(2) < 0) {
+      data.heading[i] = nav->sol().rot(2);//+3.14*2;
     } else {
-      data.heading[i] = nav.psi;
+      data.heading[i] = nav->sol().rot(2);
     }
-    data.lat[i]   = nav.phi;
-    data.lon[i]   = nav.lambda;
-    data.v_e[i]   = nav.v_enu.E;
-    data.v_n[i]   = nav.v_enu.N;
+    data.lat[i]   = nav->sol().pos(0);
+    data.lon[i]   = nav->sol().pos(1);
+    data.v_e[i]   = nav->sol().vel(0);
+    data.v_n[i]   = nav->sol().vel(1);
   }
 }
 

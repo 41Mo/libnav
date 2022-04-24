@@ -1,14 +1,10 @@
 #include <stdint.h>
 #include <math.h>
+#include "math.hpp"
 #include "vectors.h"
-
+#include "nav_solution.h"
 class Nav {
 public:
-	/*
-		Remove default constructor.
-		Frequency is mandatory for Nav to operate.
-	*/
-	Nav() = delete;
 
 	/*
 		Constructor based on current coordinates and frequency.
@@ -21,7 +17,7 @@ public:
     Nav(int frequency);
 
 	/*
-		Set current position.
+		Set current position in ENU frame.
 	*/
 	void set_pos(float phi, float lambda);
 
@@ -43,20 +39,24 @@ public:
 	/*
 		Do 1 iteration over acc and gyr data.
 	*/
-	void iter(vec_body acc, vec_body gyr);
-	
+	void iter(matrix::Vector3f &acc, matrix::Vector3f &gyr);
+	void iter(float acc[3], float gyr[3]);
+	void iter(const vec_body& a, const vec_body& g);
+
+	/*
+		Get solution for current iteration.
+	*/
+	Nav_solution& sol() { return ns; }
 	/* 
 	Special function just for analysis purposes.
 	Primarly used to check if alignment was successfull.
 	*/
 	void get_prh(vec_body *v);
 
-
-
 private:
-	void puasson_equation();
+	void puasson_equation(matrix::Vector3f &w_body);
 	void euler_angles();
-	void acc_body_enu();
+	void acc_body_enu(matrix::Vector3f &a_body);
 	void speed();
 	void coordinates();
 	void ang_velocity_body_enu();
@@ -69,25 +69,47 @@ private:
 	*/
 
 	/*
-		Direction cosine matrix initial values
+		Direction cosine matrix
 	*/
-	float c11{1}, c12{0}, c13{0}, c21{0}, c22{1}, c23{0}, c31{0}, c32{0}, c33{1};
+	matrix::Dcmf dcm;
+
+	/*
+		Euler angles
+	*/
+	matrix::Eulerf pry;
+
+	/*
+		Holding current coordinates
+		0 elem - latitide
+		1 elem - longtitude
+	*/
+	matrix::Vector2f coord;
 
 	float H{0};	// height above ground
-	float teta{0}; // pitch
-	float gamma{0}; // roll
-	float psi{0}; // yaw
-	float phi{0}; // latitude
-	float lambda{0}; // lontitude
+	//float phi{0}; // latitude
+	//float lambda{0}; // lontitude
 	int frequency{0}; // operation frequency
 	float dt{0};
 	int i{0};
 
-	vec_body w_body {0, 0, 0};
-	vec_body a_body {0, 0, 0};
-	vec_enu v_enu {0, 0, 0};
-	vec_enu w_enu{0,0,0};
-	vec_enu a_enu{0,0,0};
+	matrix::Vector3f v_enu{0,0,0};
+	matrix::Vector3f w_enu{0,0,0};
+	matrix::Vector3f a_enu{0,0,0};
+
+	Nav_solution ns;
+
+/*
+	Remove default constructor.
+	Frequency is mandatory for Nav to operate.
+*/
+public: Nav() = delete;
+
+/*
+	Remove copy constructor.
+*/
+public: Nav (const Nav&) = delete;
+public: Nav& operator= (const Nav&) = delete;
+
 };
 
 /*

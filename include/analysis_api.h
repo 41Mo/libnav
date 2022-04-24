@@ -1,6 +1,8 @@
 #ifndef analysis_api_h__
 #define analysis_api_h__
 
+#include <memory>
+
 #include "nav_alg.h"
 #include "vectors.h"
 #include "constants.h"
@@ -33,7 +35,7 @@ extern "C"
     int points;
     SENSORS sensors;
     OUT data;
-    Nav nav{};
+    std::unique_ptr<Nav> nav;
 
   public:
     Analysis_api();
@@ -46,19 +48,18 @@ extern "C"
     // accessors to the nav alignment
     void alignment(float roll, float pitch, float yaw)
     {
-      nav.alignment(roll, pitch, yaw);
+      nav->alignment(roll, pitch, yaw);
     };
     void alignment(float ax_mean, float ay_mean, float az_mean, float yaw)
     {
-      nav.alignment(ax_mean, ay_mean, az_mean, yaw);
+      nav->alignment(ax_mean, ay_mean, az_mean, yaw);
     };
     void alignment(float st, float ct, float sg, float cg, float sp, float cp)
     {
-      nav.alignment(st, ct, sg, cg, sp, cp);
+      nav->alignment(st, ct, sg, cg, sp, cp);
     };
-
 	  // special function just for analysis purposes
-    void nav_get_prh(vec_body *v) { nav.get_prh(v); }
+    void nav_get_prh(vec_body *v) { nav->get_prh(v); }
   };
 
 #ifndef PYTHON
