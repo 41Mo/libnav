@@ -17,6 +17,11 @@ Nav::Nav(int f)
 	dt = 1/float(frequency);
 }
 
+void Nav::set_pos(float p, float l) {
+	phi = p;
+	lambda = l;
+}
+
 void Nav::puasson_equation() 
 {
 	c11 = c11 - dt * (c13 * w_body.Y + c31 * w_enu.N - c12 * w_body.Z - c21 * w_enu.U);

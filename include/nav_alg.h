@@ -15,6 +15,11 @@ public:
     Nav(int frequency);
 
 	/*
+		Set current position.
+	*/
+	void set_pos(float phi, float lambda);
+
+	/*
 		Alignment based on 3 angles of rotation 
 	*/
 	void alignment(float roll, float pitch, float yaw);
