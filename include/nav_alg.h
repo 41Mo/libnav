@@ -4,9 +4,7 @@
 
 class Nav {
 public:
-    // constructor
     Nav();
-    // destructor
     ~Nav() {};
 
 	/*
