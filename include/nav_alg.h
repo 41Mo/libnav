@@ -5,6 +5,12 @@
 class Nav {
 public:
 	/*
+		Remove default constructor.
+		Frequency is mandatory for Nav to operate.
+	*/
+	Nav() = delete;
+
+	/*
 		Constructor based on current coordinates and frequency.
 	*/
     Nav(float phi, float lambda, int frequency);
