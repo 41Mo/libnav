@@ -26,6 +26,10 @@ public:
 		Alignment based on sin and cos of 3 angles of rotation.
 	*/
 	void alignment(float st, float ct, float sg, float cg, float sp, float cp);
+
+	/*
+		Do 1 iteration over acc and gyr data.
+	*/
 	void iter(vec_body acc, vec_body gyr);
 	
 	/* 
