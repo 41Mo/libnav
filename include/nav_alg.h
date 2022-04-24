@@ -4,13 +4,15 @@
 
 class Nav {
 public:
-    Nav();
-    ~Nav() {};
+	/*
+		Constructor based on current coordinates and frequency.
+	*/
+    Nav(float phi, float lambda, int frequency);
 
 	/*
-		Algorithm initialization based on current coordinates and frequency.
+		Constructor based on frequency.
 	*/
-	void init(float phi, float lambda, int frequency);
+    Nav(int frequency);
 
 	/*
 		Alignment based on 3 angles of rotation 
@@ -66,7 +68,7 @@ private:
 	float psi{0}; // yaw
 	float phi{0}; // latitude
 	float lambda{0}; // lontitude
-	int frequency{0};
+	int frequency{0}; // operation frequency
 	float dt{0};
 	int i{0};
 

@@ -3,15 +3,18 @@
 #include <stdio.h>
 #include "constants.h"
 
-Nav::Nav()
+Nav::Nav(float p, float l, int f)
 {
-}
-
-void Nav::init(float p, float l, int f) {
 	phi = p;
 	lambda = l;
 	frequency = f;
-	Nav::dt = 1/float(frequency);
+	dt = 1/float(frequency);
+}
+
+Nav::Nav(int f)
+{
+	frequency = f;
+	dt = 1/float(frequency);
 }
 
 void Nav::puasson_equation() 
