@@ -117,7 +117,6 @@ void Nav::alignment(float ax, float ay, float az, float yaw) {
 
 	alignment(st, ct, sg, cg, sp, cp);
 }
-//vec_enu Nav::mag_to_enu()
 
 void Nav::norm_row() 
 {
@@ -186,3 +185,9 @@ void Nav::iter(vec_body acc, vec_body gyr)
 	euler_angles();
 	coordinates();
 }
+
+/* TODO:
+	add a function to convert the magnetometer
+	yaw from body to enu
+vec_enu Nav::mag_to_enu()
+*/
