@@ -119,62 +119,25 @@ void Nav::alignment(float ax, float ay, float az, float yaw) {
 	alignment(st, ct, sg, cg, sp, cp);
 }
 
-/*
-void Nav::norm_row() 
-{
-	float c1i = pow(c11,2) + pow(c12,2) + pow(c13,2);
-	float c2i = pow(c21,2) + pow(c22,2) + pow(c23,2);
-	float c3i = pow(c31,2) + pow(c32,2) + pow(c33,2);
-
-	if (c1i > 1) c1i = 1;
-	if (c2i > 1) c2i = 1;
-	if (c3i > 1) c3i = 1;
-
-	c11 = c11 / c1i;
-	c12 = c12 / c1i;
-	c13 = c13 / c1i;
-	c21 = c21 / c2i;
-	c22 = c22 / c2i;
-	c23 = c23 / c2i;
-	c31 = c31 / c3i;
-	c32 = c32 / c3i;
-	c33 = c33 / c3i;
-}
-
-void Nav::norm_column() 
-{
-	float cj1 = pow(c11,2) + pow(c21,2) + pow(c31,2);
-	float cj2 = pow(c12,2) + pow(c22,2) + pow(c32,2);
-	float cj3 = pow(c13,2) + pow(c23,2) + pow(c33,2);
-
-	if (cj1 > 1) cj1 = 1;
-	if (cj2 > 1) cj2 = 1;
-	if (cj3 > 1) cj3 = 1;
-
-	c11 = c11 / cj1;
-	c12 = c12 / cj2;
-	c13 = c13 / cj3;
-	c21 = c21 / cj1;
-	c22 = c22 / cj2;
-	c23 = c23 / cj3;
-	c31 = c31 / cj1;
-	c32 = c32 / cj2;
-	c33 = c33 / cj3;
-}
-
 void Nav::normalization()
 {
 	if (i <= 5) {
-		norm_row();
+		for (size_t j = 0; j < 3; j++)
+		{
+			dcm.row(j) = dcm.row(j).norm();
+		}
+		
 		i++;
 	} else if (i <= 10) {
-		norm_column();
+		for (size_t j = 0; j < 3; j++)
+		{
+			dcm.col(j) = dcm.col(j).norm();
+		}
 		i++;
 	} else {
 		i = 0;
 	}
 }
-*/
 
 void Nav::iter(matrix::Vector3f &acc, matrix::Vector3f &gyr)
 {
