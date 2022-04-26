@@ -1,6 +1,6 @@
 LIB_SRCS := \
 		src/nav_alg.cpp \
-		src/nav_solution.cpp \
+		src/nav_solution.cpp
 
 API_SRCS := \
 		src/analysis_api.cpp
@@ -34,7 +34,7 @@ api: ${API}
 	${CC}  $(addprefix -I,$(HDRS)) ${CPPFLAGS} -c $< -o $@
 
 $(LIB): $(LIB_OBJS)
-	${CC} ${LINKAGE} $< -o $@
+	${CC} ${LINKAGE} $^ -o $@
 
 $(API): ${LIB_OBJS} ${API_OBJS}
 	${CC} ${LINKAGE} $^ -o $@
