@@ -32,6 +32,9 @@ void Nav::puasson_equation(matrix::Vector3f &w_body)
 
 void Nav::euler_angles()
 {
+	/*
+		TODO: calculations of pry without using copy constructor
+	*/
 	pry = matrix::Eulerf(dcm);
 }
 
@@ -41,10 +44,6 @@ void Nav::get_prh(vec_body *v)
 	float teta = atan(dcm(2,1)/c0);
 	float gamma = -atan(dcm(2,0)/dcm(2,2));
 	float psi = atan2f(dcm(0,1), dcm(1,1));
-
-	//printf("Old:\nteta:%f; gamma:%f; psi:%f\n", teta, gamma, psi);
-	//auto test = matrix::Eulerf(dcm);
-	//printf("New:\nteta:%f; gamma:%f; psi:%f\n", test(0), test(1), test(2));
 
 	v->X = teta;
 	v->Y = gamma;
@@ -177,18 +176,6 @@ void Nav::normalization()
 }
 */
 
-void Nav::iter(const vec_body& acc, const vec_body& gyr)
-{
-	auto a = matrix::Vector3f(acc.X, acc.Y, acc.Z);
-	auto g = matrix::Vector3f(gyr.X, gyr.Y, gyr.Z);
-	acc_body_enu(a);
-	ang_velocity_body_enu();
-	puasson_equation(g);
-	speed();
-	euler_angles();
-	coordinates();
-}
-
 void Nav::iter(matrix::Vector3f &acc, matrix::Vector3f &gyr)
 {
 	acc_body_enu(acc);
@@ -199,16 +186,18 @@ void Nav::iter(matrix::Vector3f &acc, matrix::Vector3f &gyr)
 	coordinates();
 }
 
+void Nav::iter(const vec_body& acc, const vec_body& gyr)
+{
+	auto a = matrix::Vector3f(acc.X, acc.Y, acc.Z);
+	auto g = matrix::Vector3f(gyr.X, gyr.Y, gyr.Z);
+	iter(a,g);
+}
+
 void Nav::iter(float acc[3], float gyr[3])
 {
 	auto a = matrix::Vector3f(acc);
 	auto g = matrix::Vector3f(gyr);
-	acc_body_enu(a);
-	ang_velocity_body_enu();
-	puasson_equation(g);
-	speed();
-	euler_angles();
-	coordinates();
+	iter(a, g);
 }
 
 /* TODO:

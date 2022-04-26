@@ -47,6 +47,7 @@ public:
 		Get solution for current iteration.
 	*/
 	Nav_solution& sol() { return ns; }
+
 	/* 
 	Special function just for analysis purposes.
 	Primarly used to check if alignment was successfull.
@@ -75,24 +76,32 @@ private:
 
 	/*
 		Euler angles
+		0 elem - pitch
+		1 elem - roll
+		2 elem - yaw
 	*/
 	matrix::Eulerf pry;
 
+ 	/*
+		Velocity in enu frrame
+		0 elem - east component
+		1 elem - north component
+		2 elem - up component
+ 	*/
+	matrix::Vector3f v_enu;
+
 	/*
-		Holding current coordinates
+		Current coordinates
 		0 elem - latitide
 		1 elem - longtitude
 	*/
 	matrix::Vector2f coord;
 
 	float H{0};	// height above ground
-	//float phi{0}; // latitude
-	//float lambda{0}; // lontitude
 	int frequency{0}; // operation frequency
 	float dt{0};
 	int i{0};
 
-	matrix::Vector3f v_enu{0,0,0};
 	matrix::Vector3f w_enu{0,0,0};
 	matrix::Vector3f a_enu{0,0,0};
 
@@ -111,17 +120,3 @@ public: Nav (const Nav&) = delete;
 public: Nav& operator= (const Nav&) = delete;
 
 };
-
-/*
-// Convert the angle given in radians to degrees.
-template<typename F>
-F rad2deg(F angle) {
-    return angle * 180.0 / M_PI;
-}
-
-// Convert the angle given in radians to degrees.
-template<typename F>
-F deg2rad(F angle) {
-    return angle * M_PI / 180.0;
-}
-*/
