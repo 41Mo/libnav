@@ -77,7 +77,7 @@ int main(int argc, char const *argv[])
         gyr[i-1].Z = precise_float(row.at(7));
         //test_print(acc[i], gyr[i]);
     }
-    Analysis_api *api = Analysis_api_new();
+    Nav *api = Analysis_api_new();
     SENSORS s{size, acc, gyr};
     */
 
@@ -96,14 +96,14 @@ int main(int argc, char const *argv[])
       gyr[i].Z = 0;
     }
 
-    Analysis_api *api = Analysis_api_new();
-    SENSORS s{points, acc, gyr};
+    Nav *api = Analysis_api_new();
+    SENS_IN s{points, acc, gyr};
     api_init(api, 0,0, frequency,time);
     api_set_sens(api, s);
     api_loop(api);
     auto G = api_get_g();
     printf("%f\n", G);
-    OUT a = api_get_data(api);
+    NAV_OUT a = api_get_data(api);
     for (auto i = 0; i< s.size; i++) {
       auto k = a.pitch[i];
       printf("%1.21f\n", k);

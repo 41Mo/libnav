@@ -1,26 +1,21 @@
 #include "nav_alg.h"
 #include "constants.h"
 
-#include <math.h>
-#include <stdio.h>
-
 Nav::Nav(float p, float l, int f) {
-  coord(0) = p;
-  coord(1) = l;
+  ns.p(0) = p;
+  ns.p(1) = l;
   frequency = f;
   dt = 1 / float(frequency);
-  ns.setup(&v_enu, &pry, &coord);
 }
 
 Nav::Nav(int f) {
   frequency = f;
   dt = 1 / float(frequency);
-  ns.setup(&v_enu, &pry, &coord);
 }
 
 void Nav::set_pos(float p, float l) {
-  coord(0) = p;
-  coord(1) = l;
+  ns.p(0) = p;
+  ns.p(1) = l;
 }
 
 void Nav::puasson_equation(matrix::Vector3f &w_body) {
@@ -29,42 +24,45 @@ void Nav::puasson_equation(matrix::Vector3f &w_body) {
 
 void Nav::euler_angles() {
   /*
-          TODO: calculations of pry without using copy constructor
+          TODO: calculations of ns.r without usinf32g copy constructor
   */
-  pry = matrix::Eulerf(dcm);
+  float c0 = sqrtf32(powf32(dcm(2, 0), 2) + powf32(dcm(2, 2), 2));
+  ns.r(0) = atanf32(dcm(2, 1) / c0);
+  ns.r(1) = -atanf32(dcm(2, 0) / dcm(2, 2));
+  ns.r(2) = atan2f(dcm(0, 1), dcm(1, 1));
 }
 
-void Nav::get_prh(vec_body *v) {
-  float c0 = sqrt(pow(dcm(2, 0), 2) + pow(dcm(2, 2), 2));
-  float teta = atan(dcm(2, 1) / c0);
-  float gamma = -atan(dcm(2, 0) / dcm(2, 2));
+void Nav::get_prh(float prh[3]) {
+  float c0 = sqrtf32(powf32(dcm(2, 0), 2) + powf32(dcm(2, 2), 2));
+  float teta = atanf32(dcm(2, 1) / c0);
+  float gamma = -atanf32(dcm(2, 0) / dcm(2, 2));
   float psi = atan2f(dcm(0, 1), dcm(1, 1));
 
-  v->X = teta;
-  v->Y = gamma;
-  v->Z = psi;
+  prh[0] = teta;
+  prh[1] = gamma;
+  prh[2] = psi;
 }
 
 void Nav::acc_body_enu(matrix::Vector3f &a_body) { a_enu = dcm * a_body; }
 
 void Nav::speed() {
-  v_enu(0) =
-      v_enu(0) + (a_enu(0) + (U * sin(coord(0)) + w_enu(2)) * v_enu(1)) * dt;
-  v_enu(1) =
-      v_enu(1) + (a_enu(1) - (U * sin(coord(0)) + w_enu(2)) * v_enu(0)) * dt;
+  ns.v(0) =
+      ns.v(0) + (a_enu(0) + (U * sinf32(ns.p(0)) + w_enu(2)) * ns.v(1)) * dt;
+  ns.v(1) =
+      ns.v(1) + (a_enu(1) - (U * sinf32(ns.p(0)) + w_enu(2)) * ns.v(0)) * dt;
 }
 
 void Nav::coordinates() {
   // Latitude
-  coord(0) = coord(0) + (v_enu(1) / (R + H)) * dt;
+  ns.p(0) = ns.p(0) + (ns.v(1) / (R + H)) * dt;
   // Longitude
-  coord(1) = coord(1) + (v_enu(0) / ((R + H) * cos(coord(0)))) * dt;
+  ns.p(1) = ns.p(1) + (ns.v(0) / ((R + H) * cosf32(ns.p(0)))) * dt;
 }
 
 void Nav::ang_velocity_body_enu() {
-  w_enu(0) = -v_enu(1) / (R + H);
-  w_enu(1) = v_enu(0) / (R + H) + U * cos(coord(0));
-  w_enu(2) = (v_enu(0) / (R + H)) * tan(coord(0)) + U * sin(coord(0));
+  w_enu(0) = -ns.v(1) / (R + H);
+  w_enu(1) = ns.v(0) / (R + H) + U * cosf32(ns.p(0));
+  w_enu(2) = (ns.v(0) / (R + H)) * tanf32(ns.p(0)) + U * sinf32(ns.p(0));
 }
 
 void Nav::alignment(float roll, float pitch, float yaw) {
@@ -72,13 +70,13 @@ void Nav::alignment(float roll, float pitch, float yaw) {
   float teta = pitch;
   float gamma = roll;
 
-  float sp = sin(psi);
-  float st = sin(teta);
-  float sg = sin(gamma);
+  float sp = sinf32(psi);
+  float st = sinf32(teta);
+  float sg = sinf32(gamma);
 
-  float cp = cos(psi);
-  float ct = cos(teta);
-  float cg = cos(gamma);
+  float cp = cosf32(psi);
+  float ct = cosf32(teta);
+  float cg = cosf32(gamma);
 
   alignment(st, ct, sg, cg, sp, cp);
 }
@@ -99,7 +97,7 @@ void Nav::alignment(float st, float ct, float sg, float cg, float sp,
 void Nav::alignment(float ax, float ay, float az, float yaw) {
   float psi = yaw;
 
-  float A = sqrt(pow(ax, 2) + pow(az, 2));
+  float A = sqrtf32(powf32(ax, 2) + powf32(az, 2));
 
   float st = ay / G;
   float sg = -1 * ax / A;
@@ -107,8 +105,8 @@ void Nav::alignment(float ax, float ay, float az, float yaw) {
   float ct = A / G;
   float cg = az / A;
 
-  float sp = sin(psi);
-  float cp = cos(psi);
+  float sp = sinf32(psi);
+  float cp = cosf32(psi);
 
   alignment(st, ct, sg, cg, sp, cp);
 }
@@ -145,7 +143,7 @@ void Nav::iter(const vec_body &acc, const vec_body &gyr) {
   iter(a, g);
 }
 
-void Nav::iter(float acc[3], float gyr[3]) {
+void Nav::iter(const float acc[3], const float gyr[3]) {
   auto a = matrix::Vector3f(acc);
   auto g = matrix::Vector3f(gyr);
   iter(a, g);

@@ -1,4 +1,4 @@
-#include <math.h>
+//#include <math.h>
 #include <stdint.h>
 
 #include "math.hpp"
@@ -6,6 +6,7 @@
 #include "vectors.h"
 class Nav {
  public:
+  Nav() {};
   /*
           Constructor based on current coordinates and frequency.
   */
@@ -41,7 +42,7 @@ class Nav {
           Do 1 iteration over acc and gyr data.
   */
   void iter(matrix::Vector3f &acc, matrix::Vector3f &gyr);
-  void iter(float acc[3], float gyr[3]);
+  void iter(const float acc[3], const float gyr[3]);
   void iter(const vec_body &a, const vec_body &g);
 
   /*
@@ -53,7 +54,7 @@ class Nav {
   Special function just for analysis purposes.
   Primarly used to check if alignment was successfull.
   */
-  void get_prh(vec_body *v);
+  void get_prh(float prh[3]);
 
  private:
   void puasson_equation(matrix::Vector3f &w_body);
@@ -75,29 +76,6 @@ class Nav {
   */
   matrix::Dcmf dcm;
 
-  /*
-          Euler angles
-          0 elem - pitch
-          1 elem - roll
-          2 elem - yaw
-  */
-  matrix::Eulerf pry;
-
-  /*
-          Velocity in enu frrame
-          0 elem - east component
-          1 elem - north component
-          2 elem - up component
-  */
-  matrix::Vector3f v_enu;
-
-  /*
-          Current coordinates
-          0 elem - latitide
-          1 elem - longtitude
-  */
-  matrix::Vector2f coord;
-
   float H{0};        // height above ground
   int frequency{0};  // operation frequency
   float dt{0};
@@ -108,19 +86,4 @@ class Nav {
 
   Nav_solution ns;
 
-  /*
-          Remove default constructor.
-          Frequency is mandatory for Nav to operate.
-  */
- public:
-  Nav() = delete;
-
-  /*
-          Remove copy constructor.
-  */
- public:
-  Nav(const Nav &) = delete;
-
- public:
-  Nav &operator=(const Nav &) = delete;
 };
