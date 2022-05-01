@@ -1,7 +1,7 @@
 include(gtest.cmake)
 
 set(tests
-    test1
+    test_solution
     )
 
 add_custom_target(test_build)

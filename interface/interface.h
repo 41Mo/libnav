@@ -130,5 +130,4 @@ void n_align_prh(Nav *n, float prh[3]) {
 }
 
 }
-
 #endif
