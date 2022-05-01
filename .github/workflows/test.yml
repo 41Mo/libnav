@@ -1,0 +1,31 @@
+name: Tests
+
+on:
+  push:
+    branches:
+    - 'master'
+  pull_request:
+    branches:
+    - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false  # don't cancel if a job from the matrix fails
+      matrix:
+        compiler:
+          - { compiler: GNU,  CXX: g++, FORMAT: ON }
+        flavor: [ Release ]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+      - name: Install Dependencies
+        run: |
+          sudo apt install -y clang cmake g++ gcc lcov
+      - name: Build & Run
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.flavor }} -DTESTING=ON
+          make check
