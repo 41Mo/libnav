@@ -27,9 +27,9 @@ jobs:
           sudo apt install -y clang cmake g++ gcc lcov
       - name: Build navlib
         run: |
-          cmake --config=${{ matrix.flavor }} .
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.flavor }} .
           make
       - name: Build and run tests
         run: |
-          cmake --config=${{ matrix.flavor }} -DTESTING=ON .
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.flavor }} -DTESTING=ON .
           make check
