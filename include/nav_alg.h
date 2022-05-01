@@ -1,6 +1,3 @@
-//#include <math.h>
-#include <stdint.h>
-
 #include "math.hpp"
 #include "nav_solution.h"
 #include "vectors.h"

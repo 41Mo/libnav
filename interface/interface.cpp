@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "interface.h"
-#include "vectors.h"
 
 NavIface::NavIface(float lat, float lon, int frequency) {
   nav_alg = Nav(lat, lon, frequency);

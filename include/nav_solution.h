@@ -15,7 +15,7 @@ class Nav_solution {
       1 element - roll;
       2 element - yaw;
   */
-  matrix::Eulerf r;
+  matrix::Eulerf rotation;
 
   /*
       Navigation
@@ -27,14 +27,14 @@ class Nav_solution {
       1 element - V_n; north component
       2 element - V_up; vertical component
   */
-  matrix::Vector3f v;
+  matrix::Vector3f velocity;
 
   /*
       Object coordinates in ENU frame.
       0 element - latitude;
       1 element - longtitude;
   */
-  matrix::Vector2f p;
+  matrix::Vector2f position;
 
  public:
   /*

@@ -2,8 +2,8 @@
 #include "constants.h"
 
 Nav::Nav(float p, float l, int f) {
-  ns.p(0) = p;
-  ns.p(1) = l;
+  ns.position(0) = p;
+  ns.position(1) = l;
   frequency = f;
   dt = 1 / float(frequency);
 }
@@ -14,8 +14,8 @@ Nav::Nav(int f) {
 }
 
 void Nav::set_pos(float p, float l) {
-  ns.p(0) = p;
-  ns.p(1) = l;
+  ns.position(0) = p;
+  ns.position(1) = l;
 }
 
 void Nav::puasson_equation(matrix::Vector3f &w_body) {
@@ -27,9 +27,9 @@ void Nav::euler_angles() {
           TODO: calculations of ns.r without usinf32g copy constructor
   */
   float c0 = sqrtf32(powf32(dcm(2, 0), 2) + powf32(dcm(2, 2), 2));
-  ns.r(0) = atanf32(dcm(2, 1) / c0);
-  ns.r(1) = -atanf32(dcm(2, 0) / dcm(2, 2));
-  ns.r(2) = atan2f(dcm(0, 1), dcm(1, 1));
+  ns.rotation(0) = atanf32(dcm(2, 1) / c0);
+  ns.rotation(1) = -atanf32(dcm(2, 0) / dcm(2, 2));
+  ns.rotation(2) = atan2f(dcm(0, 1), dcm(1, 1));
 }
 
 void Nav::get_prh(float prh[3]) {
@@ -46,23 +46,23 @@ void Nav::get_prh(float prh[3]) {
 void Nav::acc_body_enu(matrix::Vector3f &a_body) { a_enu = dcm * a_body; }
 
 void Nav::speed() {
-  ns.v(0) =
-      ns.v(0) + (a_enu(0) + (U * sinf32(ns.p(0)) + w_enu(2)) * ns.v(1)) * dt;
-  ns.v(1) =
-      ns.v(1) + (a_enu(1) - (U * sinf32(ns.p(0)) + w_enu(2)) * ns.v(0)) * dt;
+  ns.velocity(0) =
+      ns.velocity(0) + (a_enu(0) + (U * sinf32(ns.position(0)) + w_enu(2)) * ns.velocity(1)) * dt;
+  ns.velocity(1) =
+      ns.velocity(1) + (a_enu(1) - (U * sinf32(ns.position(0)) + w_enu(2)) * ns.velocity(0)) * dt;
 }
 
 void Nav::coordinates() {
   // Latitude
-  ns.p(0) = ns.p(0) + (ns.v(1) / (R + H)) * dt;
+  ns.position(0) = ns.position(0) + (ns.velocity(1) / (R + H)) * dt;
   // Longitude
-  ns.p(1) = ns.p(1) + (ns.v(0) / ((R + H) * cosf32(ns.p(0)))) * dt;
+  ns.position(1) = ns.position(1) + (ns.velocity(0) / ((R + H) * cosf32(ns.position(0)))) * dt;
 }
 
 void Nav::ang_velocity_body_enu() {
-  w_enu(0) = -ns.v(1) / (R + H);
-  w_enu(1) = ns.v(0) / (R + H) + U * cosf32(ns.p(0));
-  w_enu(2) = (ns.v(0) / (R + H)) * tanf32(ns.p(0)) + U * sinf32(ns.p(0));
+  w_enu(0) = -ns.velocity(1) / (R + H);
+  w_enu(1) = ns.velocity(0) / (R + H) + U * cosf32(ns.position(0));
+  w_enu(2) = (ns.velocity(0) / (R + H)) * tanf32(ns.position(0)) + U * sinf32(ns.position(0));
 }
 
 void Nav::alignment(float roll, float pitch, float yaw) {
