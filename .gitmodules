@@ -1,0 +1,3 @@
+[submodule "modules/Matrix"]
+	path = modules/Matrix
+	url = https://github.com/41Mo/Matrix.git
