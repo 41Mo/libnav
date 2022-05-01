@@ -63,7 +63,6 @@ include_directories(
 
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure)
 if(TESTING)
-    link_libraries(nav)
     enable_testing()
     add_subdirectory(test)
     add_dependencies(check test_build)
