@@ -111,27 +111,10 @@ void Nav::alignment(float ax, float ay, float az, float yaw) {
   alignment(st, ct, sg, cg, sp, cp);
 }
 
-void Nav::normalize() {
-  if (i <= 5) {
-    for (size_t j = 0; j < 3; j++) {
-      dcm.row(j) = dcm.row(j).norm();
-    }
-
-    i++;
-  } else if (i <= 10) {
-    for (size_t j = 0; j < 3; j++) {
-      dcm.col(j) = dcm.col(j).norm();
-    }
-    i++;
-  } else {
-    i = 0;
-  }
-}
-
 void Nav::iter(matrix::Vector3f &acc, matrix::Vector3f &gyr) {
   acc_body_enu(acc);
   ang_velocity_body_enu();
-  normalize();
+  dcm.renormalize();
   puasson_equation(gyr);
   speed();
   euler_angles();
