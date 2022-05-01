@@ -44,7 +44,7 @@ class Nav_solution {
   1 element - V_n; north component
   2 element - V_up; vertical component
   */
-  const float& vel(int num);
+  const float& vel(size_t num);
 
   /*
           Get velocity vector.
@@ -70,7 +70,7 @@ class Nav_solution {
   1 element - roll;
   2 element - yaw;
   */
-  const float& rot(int num);
+  const float& rot(size_t num);
 
   /*
           Get rotation vector.
@@ -96,7 +96,7 @@ class Nav_solution {
   0 element - latitude;
   1 element - longtitude;
   */
-  const float& pos(int num);
+  const float& pos(size_t num);
 
   /*
       Fill vec_in with pos components.
