@@ -172,15 +172,3 @@ class NavIface(object):
     
     def nav(self):
         return self.nav_obj
-
-"""    
-n = NavIface(0,0,1)
-rot = Tarr3f()
-for i in rot:
-    print(i)
-n.nav().alignment_rph(0, 1, 0)
-n.nav().iter(0,0,0, 0, 0, 0)
-n.nav().pry(rot)
-for i in rot:
-    print(math.degrees(i))
-"""

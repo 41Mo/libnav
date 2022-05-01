@@ -32,7 +32,6 @@ NAV_OUT NavIface::solution(SENS_IN s) {
     nav_alg.sol().rot(pry[i].data);
     nav_alg.sol().pos(coord[i].data);
     nav_alg.sol().vel(vel[i].data);
-
   }
   NAV_OUT r{points, pry, coord, vel};
   return r;

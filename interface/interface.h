@@ -73,7 +73,6 @@ class NavIface {
   NAV_OUT solution(SENS_IN sensors_data);
 
   Nav* nav() { return &this->nav_alg; };
-
 };
 
 extern "C" {

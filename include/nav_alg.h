@@ -85,5 +85,4 @@ class Nav {
   matrix::Vector3f a_enu{0, 0, 0};
 
   Nav_solution ns;
-
 };
