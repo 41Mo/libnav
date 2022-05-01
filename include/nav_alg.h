@@ -65,7 +65,7 @@ class Nav {
   void ang_velocity_body_enu();
   void norm_row();
   void norm_column();
-  void normalization();
+  void normalize();
 
   /*
           All variables are represented in SI.
