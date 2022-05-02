@@ -2,14 +2,16 @@
 #include <math.hpp>
 #include "interface.h"
 #include "test_macros.hpp"
-#define ANGLE_EPS 1*M_PI/180
-#define VEL_EPS 20
-#define POS_EPS 10 * M_PI /180
-void print_vec_body(matrix::Matrix<float, 3UL, 1UL> m) {
-    for (size_t i = 0; i < 3; i++)
-    {
-        std::cout << m(i,0) << " ";
-    }
+static const float ANGLE_EPS = 0.007*M_PI/180;
+static const float VEL_EPS = 4;
+static const float POS_EPS = 0.06 * M_PI /180;
+void trace_print(size_t i, size_t j, float eq_elem, float alg_elem, float a_delta){
+    std::cout << "Iteration: " << i << std::endl;
+    std::cout << "Elem num: " << j << std::endl;
+    std::cout << "EQ elem: " << eq_elem << std::endl;
+    std::cout << "Alg elem: " << alg_elem << std::endl;
+    std::cout << "Assumed delta: " << a_delta << std::endl;
+    std::cout << "Delta: " << fabs(eq_elem - alg_elem) << std::endl;
 }
 
 int main(int argc, char const *argv[])
@@ -17,13 +19,13 @@ int main(int argc, char const *argv[])
     int lat = 0;
     int lon = 0;
 
-    uint32_t sample_time = 10800;
-    float data_frequency = 100;
+    uint32_t sample_time = 5400;
+    float data_frequency = 10;
 
     auto pry = matrix::Eulerf(0, 0, 0);
 
-    matrix::Vector3f gyro_drift = {1*M_PI/180/3600, 1*M_PI/180/3600, 0};
-    matrix::Vector3f acc_offset = {0.002f * 9.8f, 0.002f * 9.8f, 0};
+    matrix::Vector3f gyro_drift = {1*M_PI/180/3600, 2*M_PI/180/3600, 0};
+    matrix::Vector3f acc_offset = {0.001f * 9.8f, 0.002f * 9.8f, 0};
 
     matrix::Vector3f a_enu(0, 0, 9.8);
     matrix::Vector3f w_enu(0, U*cosf32(lat), U*sinf32(lat));
@@ -39,12 +41,22 @@ int main(int argc, char const *argv[])
     size_t points = sample_time*data_frequency;
     auto iface = NavIface(lat, lon, data_frequency);
 
-    iface.nav()->alignment(a_body(0,0), a_body(1,0), a_body(2,0), pry(2));
+    float abx = a_body(0,0) + acc_offset(0);
+    float aby = a_body(1,0) + acc_offset(1);
+    float abz = a_body(2,0) + acc_offset(2);
+
+    iface.nav()->alignment(abx, aby, abz, pry(2));
     float align_pry[3];
     iface.nav()->get_prh(align_pry);
+    auto r = matrix::Vector2f(align_pry);
+    r(0) -= pry(0);
+    r(1) -= pry(2);
 
-    auto r = matrix::Vector3f(align_pry);
-    TEST(isEqual(r, pry)); 
+    auto eq_pry_err = matrix::Vector2f(
+        acc_offset(1) / sqrtf32(powf32(G,2) - powf32(aby,2)),
+        -(acc_offset(0) * abz) / (pow(abx,2) + pow(abz,2))
+    );
+    TEST(isEqual(eq_pry_err, r)); 
     
     auto nu = sqrtf32(G/R);
     auto gd_enu = C_enu_body.transpose() * gyro_drift;
@@ -88,13 +100,22 @@ int main(int argc, char const *argv[])
         );
         auto alg_pos = iface.nav()->sol().pos();
         auto eq_pos = matrix::Vector2f(
-            deltaLambda, deltaPhi
+            deltaPhi, deltaLambda
         );
         for (size_t j = 0; j < 2; j++)
         {
-            TEST((fabs(alg_pry(j) - eq_pry(j)) < ANGLE_EPS));
-            TEST((fabs(alg_vel(j)-eq_vel(j)) < VEL_EPS));
-            TEST((fabs(alg_pos(j)-eq_pos(j)) < POS_EPS));
+            if (!(fabs(-alg_pry(j) + eq_pry(j)) < ANGLE_EPS)) {
+                trace_print(i, j, eq_pry(j), alg_pry(j), ANGLE_EPS);
+                TEST(0);
+            }
+            if (!(fabs(-alg_vel(j)+eq_vel(j)) < VEL_EPS)) {
+                trace_print(i, j, eq_vel(j), alg_vel(j), VEL_EPS);
+                TEST(0);
+            }
+            if(!(fabs(-alg_pos(j)+eq_pos(j)) < POS_EPS)) {
+                trace_print(i, j, eq_pos(j), alg_pos(j), POS_EPS);
+                TEST(0);
+            }
         }
     }
     
