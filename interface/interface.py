@@ -98,7 +98,6 @@ iface_lib.n_align_prh.argtypes = [c_void_p, Tarr3f]
 class Nav(object):
     def __init__(self, nav_iface_ptr:c_void_p) -> None:
         self.obj = iface_lib.i_nav(nav_iface_ptr)
-        print(iface_lib.i_nav(nav_iface_ptr))
 
     def alignment_rph(self, roll, pitch, yaw):
         iface_lib.n_alignment_rph(self.obj, roll, pitch, yaw)
