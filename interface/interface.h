@@ -113,6 +113,10 @@ void n_iter(Nav *n, const float acc[3], const float gyr[3]) {
   n->iter(acc, gyr);
 }
 
+void n_set_pos(Nav *n, float lat, float lon) {
+  n->set_pos(lat, lon);
+}
+
 void n_pry(Nav *n, float rot[3]) {
   n->sol().rot(rot);
 }

@@ -94,6 +94,8 @@ iface_lib.n_pos.argtypes = [c_void_p, Tarr2f]
 iface_lib.n_align_prh.restype = c_void_p
 iface_lib.n_align_prh.argtypes = [c_void_p, Tarr3f]
 
+iface_lib.n_set_pos.restype = c_void_p
+iface_lib.n_set_pos.argtypes = [c_void_p, c_float, c_float]
 
 class Nav(object):
     def __init__(self, nav_iface_ptr:c_void_p) -> None:
@@ -110,16 +112,35 @@ class Nav(object):
             Tarr3f(a_x, a_y, a_z),
             Tarr3f(g_x, g_y, g_z)
         )
+
     def pry(self, rot:Tarr3f):
         iface_lib.n_pry(self.obj, rot)
+    def get_pry(self):
+        rot = Tarr3f()
+        iface_lib.n_pry(self.obj, rot)
+        return rot[:]
+
     def vel(self, vel:Tarr3f):
         iface_lib.n_vel(self.obj, vel)
+    def get_vel(self):
+        vel = Tarr3f()
+        iface_lib.n_vel(self.obj, vel)
+        return vel[:]
+
     def pos(self, pos:Tarr2f):
         iface_lib.n_pos(self.obj, pos)
+    def get_pos(self):
+        pos = Tarr2f()
+        iface_lib.n_pos(self.obj, pos)
+        return pos[:]
+
     def align_prh(self) -> List:
         res = Tarr3f()
         iface_lib.n_align_prh(self.obj, res)
         return res[:3]
+
+    def set_pos(self, lat, lon):
+        iface_lib.n_set_pos(self.obj, lat,lon)
 
 class NavIface(object):
     def __init__(self, lat,lon, frequency):
