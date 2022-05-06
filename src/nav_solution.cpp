@@ -10,6 +10,16 @@ void Nav_solution::vel(float vec_in[3]) {
   }
 }
 
+const float& Nav_solution::vel_sns(size_t num) { return velocity_sns(num); }
+
+const matrix::Vector3f& Nav_solution::vel_sns() { return velocity_sns; }
+
+void Nav_solution::vel_sns(float vec_in[3]) {
+  for (size_t i = 0; i < 3; i++) {
+    vec_in[i] = this->velocity_sns(i);
+  }
+}
+
 const float& Nav_solution::rot(size_t num) { return rotation(num); }
 
 const matrix::Eulerf& Nav_solution::rot() { return rotation; }

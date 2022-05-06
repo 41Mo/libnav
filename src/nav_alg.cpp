@@ -18,6 +18,21 @@ void Nav::set_pos(float p, float l) {
   ns.position(1) = l;
 }
 
+void Nav::set_corr_mode(int Time, bool Mode)
+{
+  int corr_time = Time;
+  if (Mode) {
+  float  w_s = (2 * Pi) / corr_time;
+  float  k1 = 1.75 * w_s;
+  float  k2 = ((2.15 * pow(w_s,2)) / (G / R)) - 1;
+  float  k3 = (pow(w_s, 3) / (G / R)) - 1.75 * w_s;
+  } else {
+  float  k1 = 0;
+  float  k2 = 0;
+  float  k3 = 0;
+  }
+}
+
 void Nav::puasson_equation(matrix::Vector3f &w_body) {
   dcm = dcm + (dcm * w_body.hat() - w_enu.hat() * dcm) * dt;
 }

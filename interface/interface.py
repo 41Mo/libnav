@@ -88,6 +88,9 @@ iface_lib.n_pry.argtypes = [c_void_p, Tarr3f]
 iface_lib.n_vel.restype = c_void_p
 iface_lib.n_vel.argtypes = [c_void_p, Tarr3f]
 
+iface_lib.n_vel_sns.restype = c_void_p
+iface_lib.n_vel_sns.argtypes = [c_void_p, Tarr3f] #Right ? Check this please 
+
 iface_lib.n_pos.restype = c_void_p
 iface_lib.n_pos.argtypes = [c_void_p, Tarr2f]
 
@@ -127,6 +130,8 @@ class Nav(object):
         iface_lib.n_vel(self.obj, vel)
         return vel[:]
 
+    def vel_sns(self, vel_sns:Tarr3f):
+        iface_lib.n_vel_sns(self.obj, vel_sns) #Check this please   
     def pos(self, pos:Tarr2f):
         iface_lib.n_pos(self.obj, pos)
     def get_pos(self):

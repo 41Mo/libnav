@@ -60,6 +60,12 @@ typedef struct {
     1 elem - north component
   */
   const Vector2f *const vel;
+  /*
+    array of velocities SNS in ENU frame
+    0 elem - east component
+    1 elem - north component
+  */
+  const Vector2f *const vel_sns;
 } NAV_OUT;
 
 class NavIface {
@@ -123,6 +129,10 @@ void n_pry(Nav *n, float rot[3]) {
 
 void n_vel(Nav *n, float vel[3]) {
   n->sol().vel(vel);
+}
+
+void n_vel_sns(Nav *n, float vel_sns[3]) {
+  n->sol().vel_sns(vel_sns);
 }
 
 void n_pos(Nav *n, float coord[2]) {

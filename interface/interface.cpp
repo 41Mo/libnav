@@ -24,6 +24,7 @@ NAV_OUT NavIface::solution(SENS_IN s) {
   Vector3f pry[points];
   Vector2f coord[points];
   Vector2f vel[points];
+  Vector2f vel_sns[points];
 
   for (size_t i = 0; i < points; i++) {
     nav_alg.iter(s.a[i].data, s.g[i].data);
@@ -31,7 +32,8 @@ NAV_OUT NavIface::solution(SENS_IN s) {
     nav_alg.sol().rot(pry[i].data);
     nav_alg.sol().pos(coord[i].data);
     nav_alg.sol().vel(vel[i].data);
+    nav_alg.sol().vel_sns(vel_sns[i].data);
   }
-  NAV_OUT r{points, pry, coord, vel};
+  NAV_OUT r{points, pry, coord, vel, vel_sns};
   return r;
 }
