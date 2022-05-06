@@ -39,3 +39,13 @@ void Nav_solution::pos(float vec_in[2]) {
     vec_in[i] = position(i);
   }
 }
+
+const float& Nav_solution::pos_sns(size_t num) { return position_sns(num); }
+
+const matrix::Vector2f& Nav_solution::pos_sns() { return position_sns; }
+
+void Nav_solution::pos_sns(float vec_in[2]) {
+  for (size_t i = 0; i < 2; i++) {
+    vec_in[i] = position_sns(i);
+  }
+}

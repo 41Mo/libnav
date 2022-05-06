@@ -43,6 +43,13 @@ class Nav_solution {
   */
   matrix::Vector2f position;
 
+  /*
+      Object coordinates SNS in ENU frame.
+      0 element - latitude;
+      1 element - longtitude;
+  */
+  matrix::Vector2f position_sns;
+
  public:
   /*
           Get velocity vector component by vos in vector.
@@ -146,6 +153,30 @@ class Nav_solution {
   1 element - longtitude;
   */
   const matrix::Vector2f& pos();
+
+  /*
+          Get pos SNS vector component by pos in vecotr.
+
+  0 element - latitude;
+  1 element - longtitude;
+  */
+  const float& pos_sns(size_t num);
+
+  /*
+      Fill vec_in with pos SNS components.
+
+      0 element - latitude;
+      1 element - longtitude;
+  */
+  void pos_sns(float vec_in[2]);
+
+  /*
+          Get position SNS vector.
+
+  0 element - latitude;
+  1 element - longtitude;
+  */
+  const matrix::Vector2f& pos_sns();
 
  protected:
   friend class Nav;

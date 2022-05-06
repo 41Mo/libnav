@@ -1,6 +1,8 @@
 #include "math.hpp"
 #include "nav_solution.h"
 #include "vectors.h"
+#include "nav_cor.h"
+
 class Nav {
  public:
   Nav() {};
@@ -46,6 +48,7 @@ class Nav {
           Get solution for current iteration.
   */
   Nav_solution &sol() { return ns; }
+  Nav_correction &cor() { return co; }
 
   /*
   Special function just for analysis purposes.
@@ -63,7 +66,6 @@ class Nav {
   void norm_row();
   void norm_column();
   void normalize();
-  void set_corr_mode(int Time, bool Mode);
 
   /*
           All variables are represented in SI.
@@ -83,4 +85,5 @@ class Nav {
   matrix::Vector3f a_enu{0, 0, 0};
 
   Nav_solution ns;
+  Nav_correction co;
 };

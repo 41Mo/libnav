@@ -18,21 +18,6 @@ void Nav::set_pos(float p, float l) {
   ns.position(1) = l;
 }
 
-void Nav::set_corr_mode(int Time, bool Mode)
-{
-  int corr_time = Time;
-  if (Mode) {
-  float  w_s = (2 * Pi) / corr_time;
-  float  k1 = 1.75 * w_s;
-  float  k2 = ((2.15 * pow(w_s,2)) / (G / R)) - 1;
-  float  k3 = (pow(w_s, 3) / (G / R)) - 1.75 * w_s;
-  } else {
-  float  k1 = 0;
-  float  k2 = 0;
-  float  k3 = 0;
-  }
-}
-
 void Nav::puasson_equation(matrix::Vector3f &w_body) {
   dcm = dcm + (dcm * w_body.hat() - w_enu.hat() * dcm) * dt;
 }
@@ -62,21 +47,21 @@ void Nav::acc_body_enu(matrix::Vector3f &a_body) { a_enu = dcm * a_body; }
 
 void Nav::speed() {
   ns.velocity(0) =
-      ns.velocity(0) + (a_enu(0) + (U * sinf32(ns.position(0)) + w_enu(2)) * ns.velocity(1)) * dt;
+      ns.velocity(0) + (a_enu(0) + (U * sinf32(ns.position(0)) + w_enu(2)) * ns.velocity(1) - co.k1 * (ns.velocity(0) - ns.velocity_sns(0))) * dt;
   ns.velocity(1) =
-      ns.velocity(1) + (a_enu(1) - (U * sinf32(ns.position(0)) + w_enu(2)) * ns.velocity(0)) * dt;
+      ns.velocity(1) + (a_enu(1) - (U * sinf32(ns.position(0)) + w_enu(2)) * ns.velocity(0) - co.k1 * (ns.velocity(1) - ns.velocity_sns(1))) * dt;
 }
 
 void Nav::coordinates() {
   // Latitude
-  ns.position(0) = ns.position(0) + (ns.velocity(1) / (R + H)) * dt;
+  ns.position(0) = ns.position(0) + (ns.velocity(1) / (R + H) - co.k3 * (ns.position(0) - ns.position_sns(0))) * dt;
   // Longitude
-  ns.position(1) = ns.position(1) + (ns.velocity(0) / ((R + H) * cosf32(ns.position(0)))) * dt;
+  ns.position(1) = ns.position(1) + (ns.velocity(0) / ((R + H) * cosf32(ns.position(0))) - co.k3 * (ns.position(1) - ns.position_sns(1))) * dt;
 }
 
 void Nav::ang_velocity_body_enu() {
-  w_enu(0) = -ns.velocity(1) / (R + H);
-  w_enu(1) = ns.velocity(0) / (R + H) + U * cosf32(ns.position(0));
+  w_enu(0) = -ns.velocity(1) / (R + H) - (co.k2 / (R + H)) * (ns.velocity(1) - ns.velocity_sns(1));
+  w_enu(1) = ns.velocity(0) / (R + H) + U * cosf32(ns.position(0)) + (co.k2 / (R + H)) * (ns.velocity(0) - ns.velocity_sns(0));
   w_enu(2) = (ns.velocity(0) / (R + H)) * tanf32(ns.position(0)) + U * sinf32(ns.position(0));
 }
 
