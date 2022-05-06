@@ -77,32 +77,6 @@ class Nav_solution {
       2 element - V_up; vertical component
   */
   void vel(float vec_in[3]);
-  /*
-          Get velocity SNS vector component by vos in vector.
-
-  0 element - V_e; east component
-  1 element - V_n; north component
-  2 element - V_up; vertical component
-  */
-  const float& vel_sns(size_t num);
-
-  /*
-          Get velocity SNS vector.
-
-  0 element - V_e; east component
-  1 element - V_n; north component
-  2 element - V_up; vertical component
-  */
-  const matrix::Vector3f& vel_sns();
-
-  /*
-      Fill vec_in with vel SNS components.
-
-      0 element - V_e; east component
-      1 element - V_n; north component
-      2 element - V_up; vertical component
-  */
-  void vel_sns(float vec_in[3]);
 
   /*
           Get rotation angle vector component by pos in vector.
@@ -154,33 +128,10 @@ class Nav_solution {
   */
   const matrix::Vector2f& pos();
 
-  /*
-          Get pos SNS vector component by pos in vecotr.
-
-  0 element - latitude;
-  1 element - longtitude;
-  */
-  const float& pos_sns(size_t num);
-
-  /*
-      Fill vec_in with pos SNS components.
-
-      0 element - latitude;
-      1 element - longtitude;
-  */
-  void pos_sns(float vec_in[2]);
-
-  /*
-          Get position SNS vector.
-
-  0 element - latitude;
-  1 element - longtitude;
-  */
-  const matrix::Vector2f& pos_sns();
-
  protected:
   friend class Nav;
 
   Nav_solution() {}
 };
+
 #endif  // Pose_h__

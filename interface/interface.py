@@ -134,6 +134,8 @@ class Nav(object):
         iface_lib.n_vel_sns(self.obj, vel_sns) #Check this please   
     def pos(self, pos:Tarr2f):
         iface_lib.n_pos(self.obj, pos)
+    def pos_sns(self, pos_sns:Tarr2f):
+        iface_lib.n_pos_sns(self.obj, pos_sns)
     def get_pos(self):
         pos = Tarr2f()
         iface_lib.n_pos(self.obj, pos)
