@@ -137,8 +137,8 @@ void Nav::iter(const float acc[3], const float gyr[3]) {
 void Nav::iter(const float acc[3], const float gyr[3], float gnss_pos[2]) {
   auto a = matrix::Vector3f(acc);
   auto g = matrix::Vector3f(gyr);
-  for (size_t i = 0; i < 2 ; ++i)
-    co.dpos(i) = ns.position(i) - gnss_pos[i];
+  for (size_t j = 0; j < 2 ; ++j)
+    co.dpos(j) = ns.position(j) - gnss_pos[j];
   iter(a, g);
 }
 
