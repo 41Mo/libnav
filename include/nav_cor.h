@@ -9,7 +9,9 @@ public:
  void set_time_gnss_corr(float Time);
 
 private:
- 
+
+matrix::Vector3f velocity_sns;
+matrix::Vector2f position_sns; 
 float w_s{0.0f};
 float T;
 float gnss_coeff[3]{0,0,0};

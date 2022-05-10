@@ -134,6 +134,14 @@ void Nav::iter(const float acc[3], const float gyr[3]) {
   iter(a, g);
 }
 
+void Nav::iter(const float acc[3], const float gyr[3], const float gnss_vel[3], const float gnss_pos[2]) {
+  auto a = matrix::Vector3f(acc);
+  auto g = matrix::Vector3f(gyr);
+  co.velocity_sns = matrix::Vector3f(gnss_vel);
+  co.position_sns = matrix::Vector2f(gnss_pos);
+  iter(a, g);
+}
+
 /* TODO:
         add a function to convert the magnetometer
         yaw from body to enu
