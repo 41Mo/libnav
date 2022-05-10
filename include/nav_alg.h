@@ -66,6 +66,7 @@ class Nav {
   void norm_row();
   void norm_column();
   void normalize();
+  void set_corr_mode(int Time, bool Mode);
 
   /*
           All variables are represented in SI.

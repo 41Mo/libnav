@@ -54,24 +54,12 @@ typedef struct {
     1 elem - lon
   */
   const Vector2f *const coord;
-    /*
-    array of coordinates SNS
-    0 elem - lat
-    1 elem - lon
-  */
-  const Vector2f *const coord_sns;
   /*
     array of velocities in ENU frame
     0 elem - east component
     1 elem - north component
   */
   const Vector2f *const vel;
-  /*
-    array of velocities SNS in ENU frame
-    0 elem - east component
-    1 elem - north component
-  */
-  const Vector2f *const vel_sns;
 } NAV_OUT;
 
 class NavIface {
@@ -137,16 +125,8 @@ void n_vel(Nav *n, float vel[3]) {
   n->sol().vel(vel);
 }
 
-void n_vel_sns(Nav *n, float vel_sns[3]) {
-  n->cor().vel_sns(vel_sns);
-}
-
 void n_pos(Nav *n, float coord[2]) {
   n->sol().pos(coord);
-}
-
-void n_pos_sns(Nav *n, float coord_sns[2]) {
-  n->cor().pos_sns(coord_sns);
 }
 
 void n_align_prh(Nav *n, float prh[3]) {

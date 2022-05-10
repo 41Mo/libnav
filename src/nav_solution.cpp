@@ -29,4 +29,3 @@ void Nav_solution::pos(float vec_in[2]) {
     vec_in[i] = position(i);
   }
 }
-
