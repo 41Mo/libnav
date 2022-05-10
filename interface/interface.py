@@ -3,6 +3,7 @@ import faulthandler
 import os.path
 import sys
 from typing import List
+from functools import singledispatch
 
 faulthandler.enable()
 
@@ -82,6 +83,9 @@ iface_lib.i_nav.argtypes = [c_void_p]
 iface_lib.n_iter.restype = c_void_p
 iface_lib.n_iter.argtypes = [c_void_p, Tarr3f, Tarr3f]
 
+iface_lib.n_iter_gnss.restype = c_void_p
+iface_lib.n_iter_gnss.argtypes = [c_void_p, Tarr3f, Tarr3f, Tarr3f, Tarr2f]
+
 iface_lib.n_pry.restype = c_void_p
 iface_lib.n_pry.argtypes = [c_void_p, Tarr3f]
 
@@ -110,10 +114,23 @@ class Nav(object):
         iface_lib.n_alignment_acc(self.obj, ax_mean, ay_mean, az_mean, yaw)
     def alignment_cos(self, st, ct, sg, cg, sp, cp):
         iface_lib.n_alignment_cos(self.obj, st, ct, sg, cg, sp, cp)
+
     def iter(self, a_x, a_y, a_z, g_x, g_y, g_z):
         iface_lib.n_iter(self.obj,
             Tarr3f(a_x, a_y, a_z),
             Tarr3f(g_x, g_y, g_z)
+        )
+    def iter(self, a, g):
+        iface_lib.n_iter(self.obj,
+            Tarr3f(a[0], a[1], a[2]),
+            Tarr3f(g[0], g[1], g[2])
+        )
+    def iter(self, a, g, gnss_v, gnss_p):
+        iface_lib.n_iter_gnss(self.obj,
+            Tarr3f(a[0], a[1], a[2]),
+            Tarr3f(g[0], g[1], g[2]),
+            Tarr3f(gnss_v[0], gnss_v[1], gnss_v[2]),
+            Tarr2f(gnss_p[0], gnss_v[1]),
         )
 
     def pry(self, rot:Tarr3f):
