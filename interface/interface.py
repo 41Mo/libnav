@@ -125,12 +125,11 @@ class Nav(object):
             Tarr3f(a[0], a[1], a[2]),
             Tarr3f(g[0], g[1], g[2])
         )
-    def iter(self, a, g, gnss_v, gnss_p):
+    def iter(self, a, g, gnss_p):
         iface_lib.n_iter_gnss(self.obj,
             Tarr3f(a[0], a[1], a[2]),
             Tarr3f(g[0], g[1], g[2]),
-            Tarr3f(gnss_v[0], gnss_v[1], gnss_v[2]),
-            Tarr2f(gnss_p[0], gnss_v[1]),
+            Tarr2f(gnss_p[0], gnss_p[1]),
         )
     def gnss_T(self, T):
         iface_lib.n_time_corr(self.obj, T)
