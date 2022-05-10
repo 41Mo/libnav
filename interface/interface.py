@@ -92,9 +92,6 @@ iface_lib.n_pry.argtypes = [c_void_p, Tarr3f]
 iface_lib.n_vel.restype = c_void_p
 iface_lib.n_vel.argtypes = [c_void_p, Tarr3f]
 
-iface_lib.n_vel_sns.restype = c_void_p
-iface_lib.n_vel_sns.argtypes = [c_void_p, Tarr3f] #Right ? Check this please 
-
 iface_lib.n_pos.restype = c_void_p
 iface_lib.n_pos.argtypes = [c_void_p, Tarr2f]
 
@@ -115,17 +112,16 @@ class Nav(object):
     def alignment_cos(self, st, ct, sg, cg, sp, cp):
         iface_lib.n_alignment_cos(self.obj, st, ct, sg, cg, sp, cp)
 
+    def iter(val):
+        raise NotImplementedError
+
     def iter(self, a_x, a_y, a_z, g_x, g_y, g_z):
         iface_lib.n_iter(self.obj,
             Tarr3f(a_x, a_y, a_z),
             Tarr3f(g_x, g_y, g_z)
         )
-    def iter(self, a, g):
-        iface_lib.n_iter(self.obj,
-            Tarr3f(a[0], a[1], a[2]),
-            Tarr3f(g[0], g[1], g[2])
-        )
-    def iter(self, a, g, gnss_p):
+
+    def iter_gnss(self, a, g, gnss_p):
         iface_lib.n_iter_gnss(self.obj,
             Tarr3f(a[0], a[1], a[2]),
             Tarr3f(g[0], g[1], g[2]),
