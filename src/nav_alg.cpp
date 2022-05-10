@@ -48,21 +48,21 @@ void Nav::acc_body_enu(matrix::Vector3f &a_body) { a_enu = dcm * a_body; }
 
 void Nav::speed() {
   ns.velocity(0) =
-      ns.velocity(0) + (a_enu(0) + (U * sinf32(ns.position(0)) + w_enu(2)) * ns.velocity(1) - co.gnss_coeff[0] * (ns.velocity(0) - co.velocity_sns(0))) * dt;
+      ns.velocity(0) + (a_enu(0) + (U * sinf32(ns.position(0)) + w_enu(2)) * ns.velocity(1) - co.gnss_coeff[1] * G * co.dpos(1) * cosf32(ns.position(0)) ) * dt;
   ns.velocity(1) =
-      ns.velocity(1) + (a_enu(1) - (U * sinf32(ns.position(0)) + w_enu(2)) * ns.velocity(0) - co.gnss_coeff[0] * (ns.velocity(1) - co.velocity_sns(1))) * dt;
+      ns.velocity(1) + (a_enu(1) - (U * sinf32(ns.position(0)) + w_enu(2)) * ns.velocity(0) - co.gnss_coeff[1] * G * co.dpos(0)) * dt;
 }
 
 void Nav::coordinates() {
   // Latitude
-  ns.position(0) = ns.position(0) + (ns.velocity(1) / (R + H) - co.gnss_coeff[2] * (ns.position(0) - co.position_sns(0))) * dt;
+  ns.position(0) = ns.position(0) + (ns.velocity(1) / (R + H) - co.gnss_coeff[0] * co.dpos(0)) * dt;
   // Longitude
-  ns.position(1) = ns.position(1) + (ns.velocity(0) / ((R + H) * cosf32(ns.position(0))) - co.gnss_coeff[2] * (ns.position(1) - co.position_sns(1))) * dt;
+  ns.position(1) = ns.position(1) + (ns.velocity(0) / ((R + H) * cosf32(ns.position(0))) - co.gnss_coeff[0] * co.dpos(1)) * dt;
 }
 
 void Nav::ang_velocity_body_enu() {
-  w_enu(0) = -ns.velocity(1) / (R + H) - (co.gnss_coeff[1] / (R + H)) * (ns.velocity(1) - co.velocity_sns(1));
-  w_enu(1) = ns.velocity(0) / (R + H) + U * cosf32(ns.position(0)) + (co.gnss_coeff[1] / (R + H)) * (ns.velocity(0) - co.velocity_sns(0));
+  w_enu(0) = -ns.velocity(1) / (R + H) - co.gnss_coeff[2] * co.dpos(0);
+  w_enu(1) = ns.velocity(0) / (R + H) + U * cosf32(ns.position(0)) + co.gnss_coeff[2] * co.dpos(1) * cosf32(ns.position(0));
   w_enu(2) = (ns.velocity(0) / (R + H)) * tanf32(ns.position(0)) + U * sinf32(ns.position(0));
 }
 
@@ -134,11 +134,11 @@ void Nav::iter(const float acc[3], const float gyr[3]) {
   iter(a, g);
 }
 
-void Nav::iter(const float acc[3], const float gyr[3], const float gnss_vel[3], const float gnss_pos[2]) {
+void Nav::iter(const float acc[3], const float gyr[3], float gnss_pos[2]) {
   auto a = matrix::Vector3f(acc);
   auto g = matrix::Vector3f(gyr);
-  co.velocity_sns = matrix::Vector3f(gnss_vel);
-  co.position_sns = matrix::Vector2f(gnss_pos);
+  for (size_t i = 0; i < 2 ; ++i)
+    co.dpos(i) = ns.position(i) - gnss_pos[i];
   iter(a, g);
 }
 

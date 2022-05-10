@@ -7,11 +7,11 @@ public:
  
  void on_off_gnss_corr(bool Mode);
  void set_time_gnss_corr(float Time);
+ void corr_coef(float dphi, float dlam);
 
 private:
 
-matrix::Vector3f velocity_sns;
-matrix::Vector2f position_sns; 
+matrix::Vector2f dpos;
 float w_s{0.0f};
 float T;
 float gnss_coeff[3]{0,0,0};

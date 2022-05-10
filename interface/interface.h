@@ -113,8 +113,8 @@ void n_iter(Nav *n, const float acc[3], const float gyr[3]) {
   n->iter(acc, gyr);
 }
 
-void n_iter_gnss(Nav *n, const float acc[3], const float gyr[3], const float gnss_vel[3], const float gnss_pos[2]) {
-  n->iter(acc, gyr, gnss_vel, gnss_pos);
+void n_iter_gnss(Nav *n, const float acc[3], const float gyr[3], float gnss_pos[2]) {
+  n->iter(acc, gyr, gnss_pos);
 }
 
 void n_time_corr(Nav *n, float time) {

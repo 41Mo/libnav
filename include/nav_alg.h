@@ -42,9 +42,8 @@ class Nav {
   */
   void iter(matrix::Vector3f &acc, matrix::Vector3f &gyr);
   void iter(const float acc[3], const float gyr[3]);
-  void iter(const float acc[3], const float gyr[3], const float gnss_vel[3], const float gnss_pos[2]);
+  void iter(const float acc[3], const float gyr[3], float gnss_pos[2]);
   void iter(const vec_body &a, const vec_body &g);
-  void iter(matrix::Vector3f &acc, matrix::Vector3f &gyr,matrix::Vector3f &gnss_vel, matrix::Vector2f &gnss_pos);
 
   /*
           Get solution for current iteration.
