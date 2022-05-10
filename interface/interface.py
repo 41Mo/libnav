@@ -84,7 +84,7 @@ iface_lib.n_iter.restype = c_void_p
 iface_lib.n_iter.argtypes = [c_void_p, Tarr3f, Tarr3f]
 
 iface_lib.n_iter_gnss.restype = c_void_p
-iface_lib.n_iter_gnss.argtypes = [c_void_p, Tarr3f, Tarr3f, Tarr3f, Tarr2f]
+iface_lib.n_iter_gnss.argtypes = [c_void_p, Tarr3f, Tarr3f, Tarr2f]
 
 iface_lib.n_pry.restype = c_void_p
 iface_lib.n_pry.argtypes = [c_void_p, Tarr3f]
@@ -100,6 +100,12 @@ iface_lib.n_align_prh.argtypes = [c_void_p, Tarr3f]
 
 iface_lib.n_set_pos.restype = c_void_p
 iface_lib.n_set_pos.argtypes = [c_void_p, c_float, c_float]
+
+iface_lib.n_time_corr.restype = c_void_p
+iface_lib.n_time_corr.argtypes = [c_void_p, c_float]
+
+iface_lib.n_mode_corr.restype = c_void_p
+iface_lib.n_mode_corr.argtypes = [c_void_p, c_bool]
 
 class Nav(object):
     def __init__(self, nav_iface_ptr:c_void_p) -> None:
