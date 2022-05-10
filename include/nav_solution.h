@@ -28,13 +28,6 @@ class Nav_solution {
       2 element - V_up; vertical component
   */
   matrix::Vector3f velocity;
-  /*
-      Object velocity SNS in ENU frame.
-      0 element - V_e; east component
-      1 element - V_n; north component
-      2 element - V_up; vertical component
-  */
-  matrix::Vector3f velocity_sns;
 
   /*
       Object coordinates in ENU frame.
@@ -42,13 +35,6 @@ class Nav_solution {
       1 element - longtitude;
   */
   matrix::Vector2f position;
-
-  /*
-      Object coordinates SNS in ENU frame.
-      0 element - latitude;
-      1 element - longtitude;
-  */
-  matrix::Vector2f position_sns;
 
  public:
   /*
@@ -77,32 +63,6 @@ class Nav_solution {
       2 element - V_up; vertical component
   */
   void vel(float vec_in[3]);
-  /*
-          Get velocity SNS vector component by vos in vector.
-
-  0 element - V_e; east component
-  1 element - V_n; north component
-  2 element - V_up; vertical component
-  */
-  const float& vel_sns(size_t num);
-
-  /*
-          Get velocity SNS vector.
-
-  0 element - V_e; east component
-  1 element - V_n; north component
-  2 element - V_up; vertical component
-  */
-  const matrix::Vector3f& vel_sns();
-
-  /*
-      Fill vec_in with vel SNS components.
-
-      0 element - V_e; east component
-      1 element - V_n; north component
-      2 element - V_up; vertical component
-  */
-  void vel_sns(float vec_in[3]);
 
   /*
           Get rotation angle vector component by pos in vector.
