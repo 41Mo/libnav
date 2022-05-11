@@ -15,6 +15,7 @@ matrix::Vector2f dpos;
 float w_s{0.0f};
 float T;
 float gnss_coeff[3]{0,0,0};
+float g_c[3]{0,0,0};
 
 protected:
   friend class Nav;
