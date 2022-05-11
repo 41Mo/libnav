@@ -114,12 +114,12 @@ void Nav::alignment(float ax, float ay, float az, float yaw) {
 
 void Nav::iter(matrix::Vector3f &acc, matrix::Vector3f &gyr) {
   acc_body_enu(acc);
-  ang_velocity_body_enu();
-  dcm.renormalize();
-  puasson_equation(gyr);
   speed();
-  euler_angles();
+  ang_velocity_body_enu();
+  //dcm.renormalize();
+  puasson_equation(gyr);
   coordinates();
+  euler_angles();
 }
 
 void Nav::iter(const vec_body &acc, const vec_body &gyr) {
