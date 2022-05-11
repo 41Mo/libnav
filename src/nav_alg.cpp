@@ -116,7 +116,7 @@ void Nav::iter(matrix::Vector3f &acc, matrix::Vector3f &gyr) {
   acc_body_enu(acc);
   speed();
   ang_velocity_body_enu();
-  //dcm.renormalize();
+  dcm.renormalize();
   puasson_equation(gyr);
   coordinates();
   euler_angles();

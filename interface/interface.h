@@ -145,5 +145,9 @@ void n_align_prh(Nav *n, float prh[3]) {
   n->get_prh(prh);
 }
 
+float n_corr_k(Nav *n, int num) {
+  return n->cor().k(num);
+}
+
 }
 #endif

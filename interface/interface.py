@@ -107,6 +107,8 @@ iface_lib.n_time_corr.argtypes = [c_void_p, c_float]
 iface_lib.n_mode_corr.restype = c_void_p
 iface_lib.n_mode_corr.argtypes = [c_void_p, c_bool]
 
+iface_lib.n_corr_k.restype = c_float
+iface_lib.n_corr_k.argtypes = [c_void_p, c_int]
 class Nav(object):
     def __init__(self, nav_iface_ptr:c_void_p) -> None:
         self.obj = iface_lib.i_nav(nav_iface_ptr)
@@ -165,6 +167,9 @@ class Nav(object):
 
     def set_pos(self, lat, lon):
         iface_lib.n_set_pos(self.obj, lat,lon)
+    
+    def get_k(self, number):
+        return iface_lib.n_corr_k(self.obj, number)
 
 class NavIface(object):
     def __init__(self, lat,lon, frequency):

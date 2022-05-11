@@ -8,7 +8,7 @@ public:
  void on_off_gnss_corr(bool Mode);
  void set_time_gnss_corr(float Time);
  void corr_coef(float dphi, float dlam);
-
+ float k(int num) { return g_c[num]; };
 private:
 
 matrix::Vector2f dpos;
