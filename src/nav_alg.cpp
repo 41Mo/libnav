@@ -112,6 +112,29 @@ void Nav::alignment(float ax, float ay, float az, float yaw) {
   alignment(st, ct, sg, cg, sp, cp);
 }
 
+void Nav::iter(D_IN const &in) {
+  if (!in.imu.acc.has_value() || !in.imu.gyr.has_value()) {
+    return;
+  }
+  
+  if (in.gnss.pos.has_value()) {
+    co.dpos = ns.position - in.gnss.pos.value();
+  } else {
+    co.on_off_gnss_corr(false);
+  }
+
+  auto a = in.imu.acc.value();
+  auto g = in.imu.gyr.value();
+
+  acc_body_enu(a);
+  speed();
+  ang_velocity_body_enu();
+  dcm.renormalize();
+  puasson_equation(g);
+  coordinates();
+  euler_angles();
+}
+/*
 void Nav::iter(matrix::Vector3f &acc, matrix::Vector3f &gyr) {
   acc_body_enu(acc);
   speed();
@@ -141,6 +164,7 @@ void Nav::iter(const float acc[3], const float gyr[3], float gnss_pos[2]) {
     co.dpos(j) = ns.position(j) - gnss_pos[j];
   iter(a, g);
 }
+*/
 
 /* TODO:
         add a function to convert the magnetometer
