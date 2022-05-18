@@ -30,10 +30,10 @@ int main(int argc, char const *argv[])
     matrix::Vector3f a_enu(0, 0, 9.8);
     matrix::Vector3f w_enu(0, U*cosf32(lat), U*sinf32(lat));
 
-    auto C_enu_body = matrix::Dcmf(pry);
+    auto C_enu_body = matrix::Dcmf(pry).transpose();
 
-    auto a_body = C_enu_body * a_enu;
-    auto w_body = C_enu_body * w_enu;
+    auto a_body = matrix::Vector3f(C_enu_body * a_enu);
+    auto w_body = matrix::Vector3f(C_enu_body * w_enu);
 
     TEST(isEqual(a_body, a_enu));
     TEST(isEqual(w_body, w_enu));
@@ -41,9 +41,9 @@ int main(int argc, char const *argv[])
     size_t points = sample_time*data_frequency;
     auto iface = NavIface(lat, lon, data_frequency);
 
-    float abx = a_body(0,0) + acc_offset(0);
-    float aby = a_body(1,0) + acc_offset(1);
-    float abz = a_body(2,0) + acc_offset(2);
+    float abx = a_body(0) + acc_offset(0);
+    float aby = a_body(1) + acc_offset(1);
+    float abz = a_body(2) + acc_offset(2);
 
     iface.nav()->alignment(abx, aby, abz, pry(2));
     float align_pry[3];
@@ -64,6 +64,8 @@ int main(int argc, char const *argv[])
     auto dt = 1/data_frequency;
     float t = 0;
 
+    D_IN d;
+
     for (size_t i = 0; i < points; i++)
     {
         // nav alg error equations
@@ -78,13 +80,11 @@ int main(int argc, char const *argv[])
         t+=dt;
 
         // nav alg data
-        float a_sens[3]; float g_sens[3];
-        for (size_t j = 0; j < 3; j++)
-        {
-            a_sens[j] = a_body(j,0) + acc_offset(j);
-            g_sens[j] = w_body(j,0) + gyro_drift(j);
-        }
-        iface.nav()->iter(a_sens, g_sens);
+        matrix::Vector3f a_sens; matrix::Vector3f g_sens;
+
+        d.imu.acc = std::make_optional(a_body + acc_offset);
+        d.imu.gyr = std::make_optional(w_body + gyro_drift);
+        iface.nav()->iter(d);
 
         auto alg_pry = matrix::Vector2f(
             iface.nav()->sol().rot()

@@ -1,6 +1,7 @@
 include(gtest.cmake)
 link_libraries(nav)
 set(tests
+    test_input
     test_solution
     )
 
