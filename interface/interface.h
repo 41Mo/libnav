@@ -20,47 +20,6 @@ typedef struct {
   float data[2];
 } Vector2f;
 
-typedef struct {
-  const size_t size;
-
-  /*
-    array of accelerometer data.
-    0 elem - x component
-    1 elem - y component
-    2 elem - z component
-  */
-  const Vector3f *const a;
-  /*
-    array of gyroscope data.
-    0 elem - x component
-    1 elem - y component
-    2 elem - z component
-  */
-  const Vector3f *const g;
-} SENS_IN;
-
-typedef struct {
-  const size_t size;
-  /*
-    array of rotation angles
-    0 elem - pitch
-    1 elem - roll
-    2 elem - yaw
-  */
-  const Vector3f *const pry;
-  /*
-    array of coordinates
-    0 elem - lat
-    1 elem - lon
-  */
-  const Vector2f *const coord;
-  /*
-    array of velocities in ENU frame
-    0 elem - east component
-    1 elem - north component
-  */
-  const Vector2f *const vel;
-} NAV_OUT;
 
 class NavIface {
  private:
@@ -69,8 +28,6 @@ class NavIface {
  public:
   NavIface(float lat, float lon, int frequency);
   ~NavIface();
-
-  NAV_OUT solution(SENS_IN sensors_data);
 
   Nav* nav() { return &this->nav_alg; };
 };
@@ -86,10 +43,6 @@ NavIface *NavIface_new(float lat, float lon, int frequency) {
 float i_get_u(void) { return U; }
 
 float i_get_g(void) { return G; }
-
-NAV_OUT i_solution(NavIface* const i, SENS_IN sensors_data) {
-  return i->solution(sensors_data);
-}
 
 Nav* i_nav(NavIface* const i) {
   return i->nav();
@@ -110,11 +63,22 @@ void n_alignment_cos(Nav* n, float st, float ct, float sg, float cg,
 }
 
 void n_iter(Nav *n, const float acc[3], const float gyr[3]) {
-  n->iter(acc, gyr);
+  D_IN d {
+    D_IMU{
+      matrix::Vector3f(acc),matrix::Vector3f(gyr)
+    },
+    D_GNSS{}
+  };
+
+  n->iter(d);
 }
 
 void n_iter_gnss(Nav *n, const float acc[3], const float gyr[3], float gnss_pos[2]) {
-  n->iter(acc, gyr, gnss_pos);
+  D_IN d {
+    D_IMU {matrix::Vector3f(acc),matrix::Vector3f(gyr)},
+    D_GNSS{matrix::Vector2f(gnss_pos)}
+  };
+  n->iter(d);
 }
 
 void n_time_corr(Nav *n, float time) {
