@@ -23,7 +23,6 @@ bool test_freq(int freq) {
         return true;
     else
         return false;
-
 }
 
 int main() {
