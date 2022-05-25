@@ -1,6 +1,4 @@
-#ifndef Pose_h__
-#define Pose_h__
-
+#pragma once
 #include "math.hpp"
 
 class Nav_solution {
@@ -119,4 +117,3 @@ class Nav_solution {
 
   Nav_solution() {}
 };
-#endif  // Pose_h__

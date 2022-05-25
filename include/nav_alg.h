@@ -1,3 +1,4 @@
+#pragma once
 #include "math.hpp"
 #include "nav_solution.h"
 #include "vectors.h"
