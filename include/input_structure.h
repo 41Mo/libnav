@@ -11,6 +11,7 @@ struct D_GNSS {
 struct D_IMU {
 	std::optional<matrix::Vector3f> acc{std::nullopt};
 	std::optional<matrix::Vector3f> gyr{std::nullopt};
+	std::optional<matrix::Vector3f> mag{std::nullopt};
 };
 
 struct D_IN
