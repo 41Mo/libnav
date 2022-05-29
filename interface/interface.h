@@ -5,31 +5,15 @@
 
 #include "constants.h"
 #include "nav_alg.h"
-
-/*
-  3 component vector of float numbers
-*/
-typedef struct {
-  float data[3];
-} Vector3f;
-
-/*
-  2 component vector of float numbers
-*/
-typedef struct {
-  float data[2];
-} Vector2f;
-
-
 class NavIface {
  private:
-  Nav nav_alg;
+  NavA::Nav nav_alg;
 
  public:
   NavIface(float lat, float lon, int frequency);
   ~NavIface();
 
-  Nav* nav() { return &this->nav_alg; };
+  NavA::Nav* nav() { return &this->nav_alg; };
 };
 
 extern "C" {
@@ -40,29 +24,30 @@ NavIface *NavIface_new(float lat, float lon, int frequency) {
 
 //void i_get_prh(NavIface *i, vec_body *v) { i->nav_get_prh(v); }
 
-float i_get_u(void) { return U; }
+float i_get_u(void) { return NavA::U; }
 
-float i_get_g(void) { return G; }
+float i_get_g(void) { return NavA::G; }
 
-Nav* i_nav(NavIface* const i) {
+NavA::Nav* i_nav(NavIface* const i) {
   return i->nav();
 }
 
-void n_alignment_rph(Nav *n, float roll, float pitch, float yaw) {
+void n_alignment_rph(NavA::Nav *n, float roll, float pitch, float yaw) {
   n->alignment(roll, pitch, yaw);
 }
 
-void n_alignment_acc(Nav *n, float ax_mean, float ay_mean, float az_mean,
+void n_alignment_acc(NavA::Nav *n, float ax_mean, float ay_mean, float az_mean,
                      float yaw) {
   n->alignment(ax_mean, ay_mean, az_mean, yaw);
 }
 
-void n_alignment_cos(Nav* n, float st, float ct, float sg, float cg,
+void n_alignment_cos(NavA::Nav* n, float st, float ct, float sg, float cg,
                      float sp, float cp) {
   n->alignment(st, ct, sg, cg, sp, cp);
 }
 
-void n_iter(Nav *n, const float acc[3], const float gyr[3]) {
+void n_iter(NavA::Nav *n, const float acc[3], const float gyr[3]) {
+  using namespace NavA;
   D_IN d {
     D_IMU{
       matrix::Vector3f(acc),matrix::Vector3f(gyr)
@@ -73,7 +58,8 @@ void n_iter(Nav *n, const float acc[3], const float gyr[3]) {
   n->iter(d);
 }
 
-void n_iter_gnss(Nav *n, const float acc[3], const float gyr[3], float gnss_pos[2]) {
+void n_iter_gnss(NavA::Nav *n, const float acc[3], const float gyr[3], float gnss_pos[2]) {
+  using namespace NavA;
   D_IN d {
     D_IMU {matrix::Vector3f(acc),matrix::Vector3f(gyr)},
     D_GNSS{matrix::Vector2f(gnss_pos)}
@@ -81,35 +67,35 @@ void n_iter_gnss(Nav *n, const float acc[3], const float gyr[3], float gnss_pos[
   n->iter(d);
 }
 
-void n_time_corr(Nav *n, float time) {
+void n_time_corr(NavA::Nav *n, float time) {
   n->cor().set_time_gnss_corr(time);
 }
 
-void n_mode_corr(Nav *n, bool mode) {
+void n_mode_corr(NavA::Nav *n, bool mode) {
   n->cor().on_off_gnss_corr(mode);
 }
 
-void n_set_pos(Nav *n, float lat, float lon) {
+void n_set_pos(NavA::Nav *n, float lat, float lon) {
   n->set_pos(lat, lon);
 }
 
-void n_pry(Nav *n, float rot[3]) {
+void n_pry(NavA::Nav *n, float rot[3]) {
   n->sol().rot(rot);
 }
 
-void n_vel(Nav *n, float vel[3]) {
+void n_vel(NavA::Nav *n, float vel[3]) {
   n->sol().vel(vel);
 }
 
-void n_pos(Nav *n, float coord[2]) {
+void n_pos(NavA::Nav *n, float coord[2]) {
   n->sol().pos(coord);
 }
 
-void n_align_prh(Nav *n, float prh[3]) {
+void n_align_prh(NavA::Nav *n, float prh[3]) {
   n->get_prh(prh);
 }
 
-float n_corr_k(Nav *n, int num) {
+float n_corr_k(NavA::Nav *n, int num) {
   return n->cor().k(num);
 }
 

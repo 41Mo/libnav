@@ -3,6 +3,8 @@
 #include "interface.h"
 #include "test_macros.hpp"
 
+using namespace NavA;
+
 bool test_freq(int freq) {
     D_IN data_def{
         D_IMU{

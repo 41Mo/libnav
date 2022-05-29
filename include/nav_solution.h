@@ -1,6 +1,7 @@
 #pragma once
 #include "math.hpp"
 
+namespace NavA {
 class Nav_solution {
  private:
   /*
@@ -117,3 +118,4 @@ class Nav_solution {
 
   Nav_solution() {}
 };
+}

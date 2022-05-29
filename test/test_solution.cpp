@@ -14,6 +14,7 @@ void trace_print(size_t i, size_t j, float eq_elem, float alg_elem, float a_delt
     std::cout << "Delta: " << fabs(eq_elem - alg_elem) << std::endl;
 }
 
+using namespace NavA;
 int main(int argc, char const *argv[])
 {
     int lat = 0;

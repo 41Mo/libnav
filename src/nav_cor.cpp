@@ -2,6 +2,7 @@
 #include "constants.h"
 #include "nav_cor.h"
 
+namespace NavA {
 
 void Nav_correction::set_time_gnss_corr(float Time) 
 {
@@ -27,4 +28,5 @@ void Nav_correction::on_off_gnss_corr(bool Mode)
     gnss_coeff[1] = 0;
     gnss_coeff[2] = 0;
   }
+}
 }

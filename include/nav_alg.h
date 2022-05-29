@@ -1,10 +1,10 @@
 #pragma once
 #include "math.hpp"
 #include "nav_solution.h"
-#include "vectors.h"
 #include "nav_cor.h"
 #include "input_structure.h"
 
+namespace NavA {
 class Nav {
  public:
   Nav() {};
@@ -87,3 +87,4 @@ class Nav {
   Nav_solution ns;
   Nav_correction co;
 };
+}

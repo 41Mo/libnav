@@ -1,5 +1,6 @@
 #include "nav_solution.h"
 
+namespace NavA {
 const float& Nav_solution::vel(size_t num) { return velocity(num); }
 
 const matrix::Vector3f& Nav_solution::vel() { return velocity; }
@@ -28,4 +29,5 @@ void Nav_solution::pos(float vec_in[2]) {
   for (size_t i = 0; i < 2; i++) {
     vec_in[i] = position(i);
   }
+}
 }

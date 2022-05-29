@@ -1,6 +1,7 @@
-#ifndef nav_cor_h_
-#define nav_cor_h_
+#pragma once
+#include "math.hpp"
 
+namespace NavA {
 class Nav_correction {
  public:
   void on_off_gnss_corr(bool Mode);
@@ -19,5 +20,4 @@ class Nav_correction {
   friend class Nav;
   Nav_correction() {}
 };
-
-#endif  // nav_cor_h_
+}

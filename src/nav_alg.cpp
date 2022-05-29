@@ -1,7 +1,9 @@
-#include "nav_alg.h"
+#include "math.hpp"
 #include "constants.h"
+#include "nav_alg.h"
 #include "nav_cor.h"
 
+namespace NavA {
 Nav::Nav(float p, float l, int f) {
   ns.position(0) = p;
   ns.position(1) = l;
@@ -25,19 +27,19 @@ void Nav::puasson_equation(matrix::Vector3f &w_body) {
 
 void Nav::euler_angles() {
   /*
-          TODO: calculations of ns.r without usinf32g copy constructor
+          TODO: calculations of ns.r without ustd::sing copy constructor
   */
-  float c0 = sqrtf32(powf32(dcm(2, 0), 2) + powf32(dcm(2, 2), 2));
-  ns.rotation(0) = atanf32(dcm(2, 1) / c0);
-  ns.rotation(1) = -atanf32(dcm(2, 0) / dcm(2, 2));
-  ns.rotation(2) = atan2f(dcm(0, 1), dcm(1, 1));
+  float c0 = std::sqrt(std::pow(dcm(2, 0), 2.0f) + std::pow(dcm(2, 2), 2.0f));
+  ns.rotation(0) = std::atan(dcm(2, 1) / c0);
+  ns.rotation(1) = -std::atan(dcm(2, 0) / dcm(2, 2));
+  ns.rotation(2) = std::atan2(dcm(0, 1), dcm(1, 1));
 }
 
 void Nav::get_prh(float prh[3]) {
-  float c0 = sqrtf32(powf32(dcm(2, 0), 2) + powf32(dcm(2, 2), 2));
-  float teta = atanf32(dcm(2, 1) / c0);
-  float gamma = -atanf32(dcm(2, 0) / dcm(2, 2));
-  float psi = atan2f(dcm(0, 1), dcm(1, 1));
+  float c0 = std::sqrt(std::pow(dcm(2, 0), 2.0f) + std::pow(dcm(2, 2), 2.0f));
+  float teta = std::atan(dcm(2, 1) / c0);
+  float gamma = -std::atan(dcm(2, 0) / dcm(2, 2));
+  float psi = std::atan2(dcm(0, 1), dcm(1, 1));
 
   prh[0] = teta;
   prh[1] = gamma;
@@ -48,22 +50,22 @@ void Nav::acc_body_enu(matrix::Vector3f &a_body) { a_enu = dcm * a_body; }
 
 void Nav::speed() {
   ns.velocity(0) =
-      ns.velocity(0) + (a_enu(0) + (U * sinf32(ns.position(0)) + w_enu(2)) * ns.velocity(1) - co.gnss_coeff[1] * G * co.dpos(1) * cosf32(ns.position(0)) ) * dt;
+      ns.velocity(0) + (a_enu(0) + (U * std::sin(ns.position(0)) + w_enu(2)) * ns.velocity(1) - co.gnss_coeff[1] * G * co.dpos(1) * std::cos(ns.position(0)) ) * dt;
   ns.velocity(1) =
-      ns.velocity(1) + (a_enu(1) - (U * sinf32(ns.position(0)) + w_enu(2)) * ns.velocity(0) - co.gnss_coeff[1] * G * co.dpos(0)) * dt;
+      ns.velocity(1) + (a_enu(1) - (U * std::sin(ns.position(0)) + w_enu(2)) * ns.velocity(0) - co.gnss_coeff[1] * G * co.dpos(0)) * dt;
 }
 
 void Nav::coordinates() {
   // Latitude
   ns.position(0) = ns.position(0) + (ns.velocity(1) / (R + H) - co.gnss_coeff[0] * co.dpos(0)) * dt;
   // Longitude
-  ns.position(1) = ns.position(1) + (ns.velocity(0) / ((R + H) * cosf32(ns.position(0))) - co.gnss_coeff[0] * co.dpos(1)) * dt;
+  ns.position(1) = ns.position(1) + (ns.velocity(0) / ((R + H) * std::cos(ns.position(0))) - co.gnss_coeff[0] * co.dpos(1)) * dt;
 }
 
 void Nav::ang_velocity_body_enu() {
   w_enu(0) = -ns.velocity(1) / (R + H) - co.gnss_coeff[2] * co.dpos(0);
-  w_enu(1) = ns.velocity(0) / (R + H) + U * cosf32(ns.position(0)) + co.gnss_coeff[2] * co.dpos(1) * cosf32(ns.position(0));
-  w_enu(2) = (ns.velocity(0) / (R + H)) * tanf32(ns.position(0)) + U * sinf32(ns.position(0));
+  w_enu(1) = ns.velocity(0) / (R + H) + U * std::cos(ns.position(0)) + co.gnss_coeff[2] * co.dpos(1) * std::cos(ns.position(0));
+  w_enu(2) = (ns.velocity(0) / (R + H)) * std::tan(ns.position(0)) + U * std::sin(ns.position(0));
 }
 
 void Nav::alignment(float roll, float pitch, float yaw) {
@@ -71,13 +73,13 @@ void Nav::alignment(float roll, float pitch, float yaw) {
   float teta = pitch;
   float gamma = roll;
 
-  float sp = sinf32(psi);
-  float st = sinf32(teta);
-  float sg = sinf32(gamma);
+  float sp = std::sin(psi);
+  float st = std::sin(teta);
+  float sg = std::sin(gamma);
 
-  float cp = cosf32(psi);
-  float ct = cosf32(teta);
-  float cg = cosf32(gamma);
+  float cp = std::cos(psi);
+  float ct = std::cos(teta);
+  float cg = std::cos(gamma);
 
   alignment(st, ct, sg, cg, sp, cp);
 }
@@ -98,7 +100,7 @@ void Nav::alignment(float st, float ct, float sg, float cg, float sp,
 void Nav::alignment(float ax, float ay, float az, float yaw) {
   float psi = yaw;
 
-  float A = sqrtf32(powf32(ax, 2) + powf32(az, 2));
+  float A = std::sqrt(std::pow(ax, 2.0f) + std::pow(az, 2.0f));
 
   float st = ay / G;
   float sg = -1 * ax / A;
@@ -106,8 +108,8 @@ void Nav::alignment(float ax, float ay, float az, float yaw) {
   float ct = A / G;
   float cg = az / A;
 
-  float sp = sinf32(psi);
-  float cp = cosf32(psi);
+  float sp = std::sin(psi);
+  float cp = std::cos(psi);
 
   alignment(st, ct, sg, cg, sp, cp);
 }
@@ -133,6 +135,7 @@ void Nav::iter(D_IN const &in) {
   puasson_equation(g);
   coordinates();
   euler_angles();
+}
 }
 /*
 void Nav::iter(matrix::Vector3f &acc, matrix::Vector3f &gyr) {
