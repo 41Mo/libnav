@@ -131,7 +131,14 @@ void Nav::iter(D_IN const &in) {
   acc_body_enu(a);
   speed();
   ang_velocity_body_enu();
-  dcm.renormalize();
+  if (i % 5 == 0)
+  {
+    /* code */
+    dcm.renormalize();
+    i = 0;
+  } else {
+    i++;
+  }
   puasson_equation(g);
   coordinates();
   euler_angles();
