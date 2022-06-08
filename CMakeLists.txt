@@ -39,6 +39,7 @@ add_compile_options(
     -Wundef
     -Wuninitialized
     -Wunused-variable
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=1
     )
 
 file(GLOB SRCS
