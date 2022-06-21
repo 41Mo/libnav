@@ -99,5 +99,20 @@ float n_corr_k(NavA::Nav *n, int num) {
   return n->cor().k(num);
 }
 
+void toggle_rad_c(NavA::Nav *n, bool Mode) {
+  n->cor().on_off_radial_corr(Mode);
+}
+
+void rad_set_k(NavA::Nav *n, float k) {
+  n->cor().set_k_radial_corr(k);
+}
+
+void toggle_integ_rad_c(NavA::Nav *n, bool Mode) {
+  n->cor().on_off_int_rad_corr(Mode);
+}
+
+void integ_rad_set_k(NavA::Nav *n, float k) {
+  n->cor().set_k_integ_rad_corr(k);
+}
 }
 #endif

@@ -109,6 +109,19 @@ iface_lib.n_mode_corr.argtypes = [c_void_p, c_bool]
 
 iface_lib.n_corr_k.restype = c_float
 iface_lib.n_corr_k.argtypes = [c_void_p, c_int]
+
+iface_lib.toggle_rad_c.restype = c_void_p
+iface_lib.toggle_rad_c.argtypes = [c_void_p, c_bool]
+
+iface_lib.rad_set_k.restype = c_void_p
+iface_lib.rad_set_k.argtypes = [c_void_p, c_float]
+
+iface_lib.toggle_integ_rad_c.restype = c_void_p
+iface_lib.toggle_integ_rad_c.argtypes = [c_void_p, c_bool]
+
+iface_lib.integ_rad_set_k.restype = c_void_p
+iface_lib.integ_rad_set_k.argtypes = [c_void_p, c_float]
+
 class Nav(object):
     def __init__(self, nav_iface_ptr:c_void_p) -> None:
         self.obj = iface_lib.i_nav(nav_iface_ptr)
@@ -170,6 +183,18 @@ class Nav(object):
     
     def get_k(self, number):
         return iface_lib.n_corr_k(self.obj, number)
+    
+    def toggle_rad_c(self, mode):
+        iface_lib.toggle_rad_c(self.obj, mode)
+
+    def rad_set_k(self, k):
+        iface_lib.rad_set_k(self.obj, k)
+
+    def toggle_integ_rad_c(self, mode):
+        iface_lib.toggle_integ_rad_c(self.obj, mode)
+
+    def integ_rad_set_k(self, k):
+        iface_lib.integ_rad_set_k(self.obj, k)
 
 class NavIface(object):
     def __init__(self, lat,lon, frequency):

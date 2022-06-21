@@ -63,7 +63,7 @@ void Nav::coordinates() {
 }
 
 void Nav::ang_velocity_body_enu() {
-  w_enu(0) = -ns.velocity(1) / (R + H) - co.gnss_coeff[2] * co.dpos(0);
+  w_enu(0) = -ns.velocity(1) / (R + H)  - co.gnss_coeff[2] * co.dpos(0);
   w_enu(1) = ns.velocity(0) / (R + H) + U * std::cos(ns.position(0)) + co.gnss_coeff[2] * co.dpos(1) * std::cos(ns.position(0));
   w_enu(2) = (ns.velocity(0) / (R + H)) * std::tan(ns.position(0)) + U * std::sin(ns.position(0));
 }
@@ -130,16 +130,21 @@ void Nav::iter(D_IN const &in) {
 
   acc_body_enu(a);
   speed();
-  ang_velocity_body_enu();
+  if (!co.rad_c)
+    ang_velocity_body_enu();
+  else {
+    w_enu(0) = a_enu(1) * -co.rad_corr_c;
+    w_enu(1) = a_enu(0) * co.rad_corr_c;
+    w_enu(2) = (ns.velocity(0) / (R + H)) * std::tan(ns.position(0)) + U * std::sin(ns.position(0));
+  }
+  puasson_equation(g);
   if (i % 5 == 0)
   {
-    /* code */
     dcm.renormalize();
     i = 0;
   } else {
     i++;
   }
-  puasson_equation(g);
   coordinates();
   euler_angles();
 }
