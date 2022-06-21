@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(nav VERSION 0.1)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 option(TESTING "Enable testing" OFF)
@@ -39,6 +39,7 @@ add_compile_options(
     -Wundef
     -Wuninitialized
     -Wunused-variable
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=1
     )
 
 file(GLOB SRCS

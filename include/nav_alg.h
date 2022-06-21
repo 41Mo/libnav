@@ -1,6 +1,10 @@
+#pragma once
 #include "math.hpp"
 #include "nav_solution.h"
-#include "vectors.h"
+#include "nav_cor.h"
+#include "input_structure.h"
+
+namespace NavA {
 class Nav {
  public:
   Nav() {};
@@ -38,14 +42,12 @@ class Nav {
   /*
           Do 1 iteration over acc and gyr data.
   */
-  void iter(matrix::Vector3f &acc, matrix::Vector3f &gyr);
-  void iter(const float acc[3], const float gyr[3]);
-  void iter(const vec_body &a, const vec_body &g);
-
+  void iter(D_IN const &input);
   /*
           Get solution for current iteration.
   */
   Nav_solution &sol() { return ns; }
+  Nav_correction &cor() { return co; }
 
   /*
   Special function just for analysis purposes.
@@ -63,6 +65,7 @@ class Nav {
   void norm_row();
   void norm_column();
   void normalize();
+  void set_corr_mode(int Time, bool Mode);
 
   /*
           All variables are represented in SI.
@@ -82,4 +85,6 @@ class Nav {
   matrix::Vector3f a_enu{0, 0, 0};
 
   Nav_solution ns;
+  Nav_correction co;
 };
+}

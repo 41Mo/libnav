@@ -3,6 +3,7 @@ import faulthandler
 import os.path
 import sys
 from typing import List
+from functools import singledispatch
 
 faulthandler.enable()
 
@@ -82,6 +83,9 @@ iface_lib.i_nav.argtypes = [c_void_p]
 iface_lib.n_iter.restype = c_void_p
 iface_lib.n_iter.argtypes = [c_void_p, Tarr3f, Tarr3f]
 
+iface_lib.n_iter_gnss.restype = c_void_p
+iface_lib.n_iter_gnss.argtypes = [c_void_p, Tarr3f, Tarr3f, Tarr2f]
+
 iface_lib.n_pry.restype = c_void_p
 iface_lib.n_pry.argtypes = [c_void_p, Tarr3f]
 
@@ -97,6 +101,27 @@ iface_lib.n_align_prh.argtypes = [c_void_p, Tarr3f]
 iface_lib.n_set_pos.restype = c_void_p
 iface_lib.n_set_pos.argtypes = [c_void_p, c_float, c_float]
 
+iface_lib.n_time_corr.restype = c_void_p
+iface_lib.n_time_corr.argtypes = [c_void_p, c_float]
+
+iface_lib.n_mode_corr.restype = c_void_p
+iface_lib.n_mode_corr.argtypes = [c_void_p, c_bool]
+
+iface_lib.n_corr_k.restype = c_float
+iface_lib.n_corr_k.argtypes = [c_void_p, c_int]
+
+iface_lib.toggle_rad_c.restype = c_void_p
+iface_lib.toggle_rad_c.argtypes = [c_void_p, c_bool]
+
+iface_lib.rad_set_k.restype = c_void_p
+iface_lib.rad_set_k.argtypes = [c_void_p, c_float]
+
+iface_lib.toggle_integ_rad_c.restype = c_void_p
+iface_lib.toggle_integ_rad_c.argtypes = [c_void_p, c_bool]
+
+iface_lib.integ_rad_set_k.restype = c_void_p
+iface_lib.integ_rad_set_k.argtypes = [c_void_p, c_float]
+
 class Nav(object):
     def __init__(self, nav_iface_ptr:c_void_p) -> None:
         self.obj = iface_lib.i_nav(nav_iface_ptr)
@@ -107,12 +132,26 @@ class Nav(object):
         iface_lib.n_alignment_acc(self.obj, ax_mean, ay_mean, az_mean, yaw)
     def alignment_cos(self, st, ct, sg, cg, sp, cp):
         iface_lib.n_alignment_cos(self.obj, st, ct, sg, cg, sp, cp)
+
+    def iter(val):
+        raise NotImplementedError
+
     def iter(self, a_x, a_y, a_z, g_x, g_y, g_z):
         iface_lib.n_iter(self.obj,
             Tarr3f(a_x, a_y, a_z),
             Tarr3f(g_x, g_y, g_z)
         )
 
+    def iter_gnss(self, a, g, gnss_p):
+        iface_lib.n_iter_gnss(self.obj,
+            Tarr3f(a[0], a[1], a[2]),
+            Tarr3f(g[0], g[1], g[2]),
+            Tarr2f(gnss_p[0], gnss_p[1]),
+        )
+    def gnss_T(self, T):
+        iface_lib.n_time_corr(self.obj, T)
+    def corr_mode(self, mode):
+        iface_lib.n_mode_corr(self.obj, mode)
     def pry(self, rot:Tarr3f):
         iface_lib.n_pry(self.obj, rot)
     def get_pry(self):
@@ -141,6 +180,21 @@ class Nav(object):
 
     def set_pos(self, lat, lon):
         iface_lib.n_set_pos(self.obj, lat,lon)
+    
+    def get_k(self, number):
+        return iface_lib.n_corr_k(self.obj, number)
+    
+    def toggle_rad_c(self, mode):
+        iface_lib.toggle_rad_c(self.obj, mode)
+
+    def rad_set_k(self, k):
+        iface_lib.rad_set_k(self.obj, k)
+
+    def toggle_integ_rad_c(self, mode):
+        iface_lib.toggle_integ_rad_c(self.obj, mode)
+
+    def integ_rad_set_k(self, k):
+        iface_lib.integ_rad_set_k(self.obj, k)
 
 class NavIface(object):
     def __init__(self, lat,lon, frequency):

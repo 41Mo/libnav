@@ -1,8 +1,7 @@
-#ifndef Pose_h__
-#define Pose_h__
-
+#pragma once
 #include "math.hpp"
 
+namespace NavA {
 class Nav_solution {
  private:
   /*
@@ -119,4 +118,4 @@ class Nav_solution {
 
   Nav_solution() {}
 };
-#endif  // Pose_h__
+}
