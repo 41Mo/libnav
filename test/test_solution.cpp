@@ -23,18 +23,18 @@ int main(int argc, char const *argv[])
     uint32_t sample_time = 5400;
     float data_frequency = 10;
 
-    auto pry = matrix::Eulerf(0, 0, 0);
+    auto pry = matrix::Eulerd(0, 0, 0);
 
-    matrix::Vector3f gyro_drift = {1*M_PI/180/3600, 2*M_PI/180/3600, 0};
-    matrix::Vector3f acc_offset = {0.001f * 9.8f, 0.002f * 9.8f, 0};
+    matrix::Vector3d gyro_drift = {1*M_PI/180/3600, 2*M_PI/180/3600, 0};
+    matrix::Vector3d acc_offset = {0.001f * 9.8f, 0.002f * 9.8f, 0};
 
-    matrix::Vector3f a_enu(0, 0, 9.8);
-    matrix::Vector3f w_enu(0, U*cosf32(lat), U*sinf32(lat));
+    matrix::Vector3d a_enu(0, 0, 9.8);
+    matrix::Vector3d w_enu(0, U*cosf32(lat), U*sinf32(lat));
 
-    auto C_enu_body = matrix::Dcmf(pry).transpose();
+    auto C_enu_body = matrix::Dcmd(pry).transpose();
 
-    auto a_body = matrix::Vector3f(C_enu_body * a_enu);
-    auto w_body = matrix::Vector3f(C_enu_body * w_enu);
+    auto a_body = matrix::Vector3d(C_enu_body * a_enu);
+    auto w_body = matrix::Vector3d(C_enu_body * w_enu);
 
     TEST(isEqual(a_body, a_enu));
     TEST(isEqual(w_body, w_enu));
@@ -81,26 +81,26 @@ int main(int argc, char const *argv[])
         t+=dt;
 
         // nav alg data
-        matrix::Vector3f a_sens; matrix::Vector3f g_sens;
+        matrix::Vector3d a_sens; matrix::Vector3d g_sens;
 
         d.imu.acc = std::make_optional(a_body + acc_offset);
         d.imu.gyr = std::make_optional(w_body + gyro_drift);
         iface.nav()->iter(d);
 
-        auto alg_pry = matrix::Vector2f(
+        auto alg_pry = matrix::Vector2d(
             iface.nav()->sol().rot()
         );
-        auto eq_pry = matrix::Vector2f(
+        auto eq_pry = matrix::Vector2d(
             pitch, roll
         );
-        auto alg_vel = matrix::Vector2f(
+        auto alg_vel = matrix::Vector2d(
             iface.nav()->sol().vel()
         );
-        auto eq_vel = matrix::Vector2f(
+        auto eq_vel = matrix::Vector2d(
             deltaVx, deltaVy
         );
         auto alg_pos = iface.nav()->sol().pos();
-        auto eq_pos = matrix::Vector2f(
+        auto eq_pos = matrix::Vector2d(
             deltaPhi, deltaLambda
         );
         for (size_t j = 0; j < 2; j++)

@@ -21,7 +21,7 @@ void Nav::set_pos(float p, float l) {
   ns.position(1) = l;
 }
 
-void Nav::puasson_equation(matrix::Vector3f &w_body) {
+void Nav::puasson_equation(matrix::Vector3d &w_body) {
   dcm = dcm + (dcm * w_body.hat() - w_enu.hat() * dcm) * dt;
 }
 
@@ -29,30 +29,38 @@ void Nav::euler_angles() {
   /*
           TODO: calculations of ns.r without ustd::sing copy constructor
   */
-  float c0 = std::sqrt(std::pow(dcm(2, 0), 2.0f) + std::pow(dcm(2, 2), 2.0f));
+  double c0 = std::sqrt(std::pow(dcm(2, 0), 2.0) + std::pow(dcm(2, 2), 2.0));
   ns.rotation(0) = std::atan(dcm(2, 1) / c0);
   ns.rotation(1) = -std::atan(dcm(2, 0) / dcm(2, 2));
   ns.rotation(2) = std::atan2(dcm(0, 1), dcm(1, 1));
 }
 
 void Nav::get_prh(float prh[3]) {
-  float c0 = std::sqrt(std::pow(dcm(2, 0), 2.0f) + std::pow(dcm(2, 2), 2.0f));
-  float teta = std::atan(dcm(2, 1) / c0);
-  float gamma = -std::atan(dcm(2, 0) / dcm(2, 2));
-  float psi = std::atan2(dcm(0, 1), dcm(1, 1));
+  double c0 = std::sqrt(std::pow(dcm(2, 0), 2.0) + std::pow(dcm(2, 2), 2.0));
+  float teta =   static_cast<float>(std::atan(dcm(2, 1) / c0));
+  float gamma =  static_cast<float>(-std::atan(dcm(2, 0) / dcm(2, 2)));
+  float psi =    static_cast<float>(std::atan2(dcm(0, 1), dcm(1, 1)));
 
   prh[0] = teta;
   prh[1] = gamma;
   prh[2] = psi;
 }
 
-void Nav::acc_body_enu(matrix::Vector3f &a_body) { a_enu = dcm * a_body; }
+void Nav::acc_body_enu(matrix::Vector3d &a_body) {
+  auto t1 = dcm(0,0)*a_body(0) + a_body(1)*dcm(0,1) + a_body(2)*dcm(0,2);
+  a_enu = dcm * a_body;
+}
 
 void Nav::speed() {
   ns.velocity(0) =
-      ns.velocity(0) + (a_enu(0) + (U * std::sin(ns.position(0)) + w_enu(2)) * ns.velocity(1) - co.gnss_coeff[1] * G * co.dpos(1) * std::cos(ns.position(0)) ) * dt;
+      ns.velocity(0) + (a_enu(0)
+      + (U * std::sin(ns.position(0)) + w_enu(2)) * ns.velocity(1)
+      - co.gnss_coeff[1] * G * co.dpos(1) * std::cos(ns.position(0)) ) * dt;
+
   ns.velocity(1) =
-      ns.velocity(1) + (a_enu(1) - (U * std::sin(ns.position(0)) + w_enu(2)) * ns.velocity(0) - co.gnss_coeff[1] * G * co.dpos(0)) * dt;
+      ns.velocity(1) + (a_enu(1)
+      - (U * std::sin(ns.position(0)) + w_enu(2)) * ns.velocity(0)
+      - co.gnss_coeff[1] * G * co.dpos(0)) * dt;
 }
 
 void Nav::coordinates() {
@@ -63,9 +71,17 @@ void Nav::coordinates() {
 }
 
 void Nav::ang_velocity_body_enu() {
-  w_enu(0) = -ns.velocity(1) / (R + H)  - co.gnss_coeff[2] * co.dpos(0);
-  w_enu(1) = ns.velocity(0) / (R + H) + U * std::cos(ns.position(0)) + co.gnss_coeff[2] * co.dpos(1) * std::cos(ns.position(0));
-  w_enu(2) = (ns.velocity(0) / (R + H)) * std::tan(ns.position(0)) + U * std::sin(ns.position(0));
+  w_enu(0) = -ns.velocity(1) / (R + H)
+  - (co.gnss_coeff[2] * co.dpos(0))
+  - co.integ_rad_c*a_enu(1);
+
+  w_enu(1) = ns.velocity(0) / (R + H)
+  + U * std::cos(ns.position(0))
+  + co.gnss_coeff[2] * co.dpos(1) * std::cos(ns.position(0))
+  + co.integ_rad_c*a_enu(0);
+
+  w_enu(2) = (ns.velocity(0) / (R + H)) * std::tan(ns.position(0))
+  + U * std::sin(ns.position(0));
 }
 
 void Nav::alignment(float roll, float pitch, float yaw) {
@@ -102,10 +118,10 @@ void Nav::alignment(float ax, float ay, float az, float yaw) {
 
   float A = std::sqrt(std::pow(ax, 2.0f) + std::pow(az, 2.0f));
 
-  float st = ay / G;
+  float st = ay / static_cast<float>(G);
   float sg = -1 * ax / A;
 
-  float ct = A / G;
+  float ct = A / static_cast<float>(G);
   float cg = az / A;
 
   float sp = std::sin(psi);

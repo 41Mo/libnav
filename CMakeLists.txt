@@ -38,7 +38,7 @@ add_compile_options(
     -Wswitch-default
     -Wundef
     -Wuninitialized
-    -Wunused-variable
+    #-Wunused-variable
     -DCMAKE_EXPORT_COMPILE_COMMANDS=1
     )
 

@@ -14,7 +14,7 @@ class Nav_solution {
       1 element - roll;
       2 element - yaw;
   */
-  matrix::Eulerf rotation;
+  matrix::Eulerd rotation;
 
   /*
       Navigation
@@ -26,14 +26,14 @@ class Nav_solution {
       1 element - V_n; north component
       2 element - V_up; vertical component
   */
-  matrix::Vector3f velocity;
+  matrix::Vector3d velocity;
 
   /*
       Object coordinates in ENU frame.
       0 element - latitude;
       1 element - longtitude;
   */
-  matrix::Vector2f position;
+  matrix::Vector2d position;
 
  public:
   /*
@@ -43,7 +43,7 @@ class Nav_solution {
   1 element - V_n; north component
   2 element - V_up; vertical component
   */
-  const float& vel(size_t num);
+  const double& vel(size_t num);
 
   /*
           Get velocity vector.
@@ -52,7 +52,7 @@ class Nav_solution {
   1 element - V_n; north component
   2 element - V_up; vertical component
   */
-  const matrix::Vector3f& vel();
+  const matrix::Vector3d& vel();
 
   /*
       Fill vec_in with vel components.
@@ -61,7 +61,7 @@ class Nav_solution {
       1 element - V_n; north component
       2 element - V_up; vertical component
   */
-  void vel(float vec_in[3]);
+  void vel(double vec_in[3]);
 
   /*
           Get rotation angle vector component by pos in vector.
@@ -69,7 +69,7 @@ class Nav_solution {
   1 element - roll;
   2 element - yaw;
   */
-  const float& rot(size_t num);
+  const double& rot(size_t num);
 
   /*
           Get rotation vector.
@@ -78,7 +78,7 @@ class Nav_solution {
   1 element - roll;
   2 element - yaw;
   */
-  const matrix::Eulerf& rot();
+  const matrix::Eulerd& rot();
 
   /*
       Fill vec_in with rot components.
@@ -87,7 +87,7 @@ class Nav_solution {
       1 element - roll;
       2 element - yaw;
   */
-  void rot(float vec_in[3]);
+  void rot(double vec_in[3]);
 
   /*
           Get pos vector component by pos in vecotr.
@@ -95,7 +95,7 @@ class Nav_solution {
   0 element - latitude;
   1 element - longtitude;
   */
-  const float& pos(size_t num);
+  const double& pos(size_t num);
 
   /*
       Fill vec_in with pos components.
@@ -103,7 +103,7 @@ class Nav_solution {
       0 element - latitude;
       1 element - longtitude;
   */
-  void pos(float vec_in[2]);
+  void pos(double vec_in[2]);
 
   /*
           Get position vector.
@@ -111,7 +111,7 @@ class Nav_solution {
   0 element - latitude;
   1 element - longtitude;
   */
-  const matrix::Vector2f& pos();
+  const matrix::Vector2d& pos();
 
  protected:
   friend class Nav;

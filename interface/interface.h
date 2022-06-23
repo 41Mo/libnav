@@ -24,9 +24,9 @@ NavIface *NavIface_new(float lat, float lon, int frequency) {
 
 //void i_get_prh(NavIface *i, vec_body *v) { i->nav_get_prh(v); }
 
-float i_get_u(void) { return NavA::U; }
+float i_get_u(void) { return static_cast<float>(NavA::U); }
 
-float i_get_g(void) { return NavA::G; }
+float i_get_g(void) { return static_cast<float>(NavA::G); }
 
 NavA::Nav* i_nav(NavIface* const i) {
   return i->nav();
@@ -46,11 +46,11 @@ void n_alignment_cos(NavA::Nav* n, float st, float ct, float sg, float cg,
   n->alignment(st, ct, sg, cg, sp, cp);
 }
 
-void n_iter(NavA::Nav *n, const float acc[3], const float gyr[3]) {
+void n_iter(NavA::Nav *n, const double acc[3], const double gyr[3]) {
   using namespace NavA;
   D_IN d {
     D_IMU{
-      matrix::Vector3f(acc),matrix::Vector3f(gyr)
+      matrix::Vector3d(acc),matrix::Vector3d(gyr)
     },
     D_GNSS{}
   };
@@ -58,11 +58,11 @@ void n_iter(NavA::Nav *n, const float acc[3], const float gyr[3]) {
   n->iter(d);
 }
 
-void n_iter_gnss(NavA::Nav *n, const float acc[3], const float gyr[3], float gnss_pos[2]) {
+void n_iter_gnss(NavA::Nav *n, const double acc[3], const double gyr[3], double gnss_pos[2]) {
   using namespace NavA;
   D_IN d {
-    D_IMU {matrix::Vector3f(acc),matrix::Vector3f(gyr)},
-    D_GNSS{matrix::Vector2f(gnss_pos)}
+    D_IMU {matrix::Vector3d(acc),matrix::Vector3d(gyr)},
+    D_GNSS{matrix::Vector2d(gnss_pos)}
   };
   n->iter(d);
 }
@@ -79,15 +79,15 @@ void n_set_pos(NavA::Nav *n, float lat, float lon) {
   n->set_pos(lat, lon);
 }
 
-void n_pry(NavA::Nav *n, float rot[3]) {
+void n_pry(NavA::Nav *n, double rot[3]) {
   n->sol().rot(rot);
 }
 
-void n_vel(NavA::Nav *n, float vel[3]) {
+void n_vel(NavA::Nav *n, double vel[3]) {
   n->sol().vel(vel);
 }
 
-void n_pos(NavA::Nav *n, float coord[2]) {
+void n_pos(NavA::Nav *n, double coord[2]) {
   n->sol().pos(coord);
 }
 

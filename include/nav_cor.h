@@ -14,13 +14,12 @@ class Nav_correction {
   void set_k_integ_rad_corr(float k);
 
  private:
-  matrix::Vector2f dpos;
+  matrix::Vector2d dpos;
   float w_s{0.0f};
   float T;
   float gnss_coeff[3]{0, 0, 0};
   float rad_corr_c{0};
   float integ_rad_c{0};
-  float rc_on{-1};
   bool rad_c{false};
 
   float g_c[3]{0, 0, 0};

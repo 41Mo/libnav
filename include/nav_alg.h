@@ -56,9 +56,9 @@ class Nav {
   void get_prh(float prh[3]);
 
  private:
-  void puasson_equation(matrix::Vector3f &w_body);
+  void puasson_equation(matrix::Vector3d &w_body);
   void euler_angles();
-  void acc_body_enu(matrix::Vector3f &a_body);
+  void acc_body_enu(matrix::Vector3d &a_body);
   void speed();
   void coordinates();
   void ang_velocity_body_enu();
@@ -74,15 +74,15 @@ class Nav {
   /*
           Direction cosine matrix
   */
-  matrix::Dcmf dcm;
+  matrix::Dcmd dcm;
 
   float H{0};        // height above ground
   int frequency{0};  // operation frequency
   float dt{0};
   int i{0};
 
-  matrix::Vector3f w_enu{0, 0, 0};
-  matrix::Vector3f a_enu{0, 0, 0};
+  matrix::Vector3d w_enu{0, 0, 0};
+  matrix::Vector3d a_enu{0, 0, 0};
 
   Nav_solution ns;
   Nav_correction co;

@@ -8,8 +8,8 @@ using namespace NavA;
 bool test_freq(int freq) {
     D_IN data_def{
         D_IMU{
-            matrix::Vector3f(0,0,9.8),
-            matrix::Vector3f(0,7.25e-5,0)
+            matrix::Vector3d(0,0,9.8),
+            matrix::Vector3d(0,7.25e-5,0)
         }
     };
 
@@ -30,18 +30,18 @@ bool test_freq(int freq) {
 int main() {
     D_IN data_def{
         D_IMU{
-            matrix::Vector3f(0,0,9.8),
-            matrix::Vector3f(0,7.25e-5,0)
+            matrix::Vector3d(0,0,9.8),
+            matrix::Vector3d(0,7.25e-5,0)
         }
     };
     D_IN data_empty;
     D_IN data_gnss_only_pos{
         D_IMU{
-            matrix::Vector3f(0,0,9.8),
-            matrix::Vector3f(0,7.25e-5,0)
+            matrix::Vector3d(0,0,9.8),
+            matrix::Vector3d(0,7.25e-5,0)
         },
         D_GNSS{
-            matrix::Vector2f(0,-10)
+            matrix::Vector2d(0,-10)
         }
     };
 
