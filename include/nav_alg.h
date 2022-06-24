@@ -3,6 +3,7 @@
 #include "nav_solution.h"
 #include "nav_cor.h"
 #include "input_structure.h"
+#include "calib.h"
 
 namespace NavA {
 class Nav {
@@ -42,7 +43,14 @@ class Nav {
   /*
           Do 1 iteration over acc and gyr data.
   */
-  void iter(D_IN const &input);
+  void iter(D_IN &input);
+
+  /*
+  */
+  inline void set_calib_file(const char* file, Calib::calib_type t) {
+    cal = Calib(file, t);
+  };
+
   /*
           Get solution for current iteration.
   */
@@ -86,5 +94,6 @@ class Nav {
 
   Nav_solution ns;
   Nav_correction co;
+  Calib cal;
 };
 }

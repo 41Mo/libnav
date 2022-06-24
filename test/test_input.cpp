@@ -47,7 +47,7 @@ int main() {
 
     for (int i = -100; i < 100; i++)
     {
-        printf("freq:%d", i);
+        printf("freq:%d\n", i);
         TEST(test_freq(i));
     }
     

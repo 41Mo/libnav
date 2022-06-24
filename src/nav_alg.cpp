@@ -129,7 +129,7 @@ void Nav::alignment(float ax, float ay, float az, float yaw) {
   alignment(st, ct, sg, cg, sp, cp);
 }
 
-void Nav::iter(D_IN const &in) {
+void Nav::iter(D_IN &in) {
   if (!in.imu.acc.has_value() || !in.imu.gyr.has_value()) {
     return;
   }
@@ -139,7 +139,7 @@ void Nav::iter(D_IN const &in) {
   } else {
     co.on_off_gnss_corr(false);
   }
-
+  cal.apply(in.imu);
   auto a = in.imu.acc.value();
   auto g = in.imu.gyr.value();
 
