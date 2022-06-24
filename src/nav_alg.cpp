@@ -47,7 +47,6 @@ void Nav::get_prh(float prh[3]) {
 }
 
 void Nav::acc_body_enu(matrix::Vector3d &a_body) {
-  auto t1 = dcm(0,0)*a_body(0) + a_body(1)*dcm(0,1) + a_body(2)*dcm(0,2);
   a_enu = dcm * a_body;
 }
 
@@ -165,37 +164,6 @@ void Nav::iter(D_IN const &in) {
   euler_angles();
 }
 }
-/*
-void Nav::iter(matrix::Vector3f &acc, matrix::Vector3f &gyr) {
-  acc_body_enu(acc);
-  speed();
-  ang_velocity_body_enu();
-  dcm.renormalize();
-  puasson_equation(gyr);
-  coordinates();
-  euler_angles();
-}
-
-void Nav::iter(const vec_body &acc, const vec_body &gyr) {
-  auto a = matrix::Vector3f(acc.X, acc.Y, acc.Z);
-  auto g = matrix::Vector3f(gyr.X, gyr.Y, gyr.Z);
-  iter(a, g);
-}
-
-void Nav::iter(const float acc[3], const float gyr[3]) {
-  auto a = matrix::Vector3f(acc);
-  auto g = matrix::Vector3f(gyr);
-  iter(a, g);
-}
-
-void Nav::iter(const float acc[3], const float gyr[3], float gnss_pos[2]) {
-  auto a = matrix::Vector3f(acc);
-  auto g = matrix::Vector3f(gyr);
-  for (size_t j = 0; j < 2 ; ++j)
-    co.dpos(j) = ns.position(j) - gnss_pos[j];
-  iter(a, g);
-}
-*/
 
 /* TODO:
         add a function to convert the magnetometer
