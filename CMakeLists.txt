@@ -7,7 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 option(TESTING "Enable testing" OFF)
 
 add_compile_options(
+    -O2
     -Wall
+    -Werror=format-security
     -Warray-bounds
     -Wcast-align
     -Wcast-qual
@@ -38,8 +40,19 @@ add_compile_options(
     -Wswitch-default
     -Wundef
     -Wuninitialized
-    #-Wunused-variable
+    -Wunused-variable
     -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+    -D_GLIBCXX_ASSERTIONS
+    -D_FORTIFY_SOURCE=2
+    -fasynchronous-unwind-tables
+    -fexceptions
+    -fstack-clash-protection
+    -fstack-protector-all
+    -fstack-protector-strong
+    -pipe
+    -Wl,-z,defs
+    -Wl,-z,now
+    -Wl,-z,relro
     )
 
 file(GLOB SRCS
