@@ -53,6 +53,7 @@ void Calib::apply(D_IMU &imu) {
       {
       case invariant:
           a = A*(a-B);
+          imu.acc = std::make_optional(a);
           break;
       
       default:
